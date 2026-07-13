@@ -18,273 +18,140 @@
       --text-dim:rgba(255,255,255,0.45);
     }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; background:var(--bg); color:#fff; font-family:'Inter',sans-serif; overscroll-behavior:none; }
 
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: #fff;
-      font-family: 'Inter', sans-serif;
-      overscroll-behavior: none;
-    }
-
-    /* ══════════════ HEADER ══════════════ */
+    /* ══ HEADER ══ */
     header {
-      position: sticky; top:0; z-index:200;
-      background: linear-gradient(135deg,#1c0404 0%,#300808 50%,#1c0404 100%);
-      border-bottom: 1px solid rgba(224,32,32,0.25);
-      padding: 12px 16px;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 10px;
+      position:sticky; top:0; z-index:200;
+      background:linear-gradient(135deg,#1c0404,#300808,#1c0404);
+      border-bottom:1px solid rgba(224,32,32,0.25);
+      padding:11px 14px;
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
     }
-    .logo {
-      font-family:'Montserrat',sans-serif; font-weight:900; font-size:18px;
-      color: var(--gold); letter-spacing:1px; white-space:nowrap;
-      text-shadow: 0 0 18px rgba(245,197,24,0.35);
-    }
+    .logo { font-family:'Montserrat',sans-serif; font-weight:900; font-size:17px; color:var(--gold); letter-spacing:1px; white-space:nowrap; text-shadow:0 0 18px rgba(245,197,24,0.35); }
     .logo span { color:#fff; }
-    .header-info {
-      display:flex; align-items:center; gap:10px; flex-shrink:0;
-    }
-    .badge {
-      background: rgba(224,32,32,0.15);
-      border: 1px solid rgba(224,32,32,0.35);
-      border-radius:999px; padding:5px 14px;
-      font-size:12px; font-weight:600; color:#ff7070;
-      white-space:nowrap;
-    }
-    .badge strong { color:#fff; font-size:15px; }
+    .badge { background:rgba(224,32,32,0.15); border:1px solid rgba(224,32,32,0.35); border-radius:999px; padding:5px 13px; font-size:12px; font-weight:600; color:#ff7070; white-space:nowrap; }
+    .badge strong { color:#fff; font-size:14px; }
 
-    /* ══════════════ LAYOUT ══════════════ */
+    /* ══ LAYOUT ══ */
     .app-layout {
-      display: grid;
-      grid-template-columns: 1fr;
-      grid-template-rows: auto auto;
-      gap: 0;
-      padding-bottom: 80px; /* space for sticky bar */
-    }
-    @media (min-width: 780px) {
-      .app-layout {
-        grid-template-columns: 1fr 380px;
-        grid-template-rows: 1fr;
-        height: calc(100vh - 53px);
-        padding-bottom: 0;
-        overflow: hidden;
-      }
-    }
-
-    /* ══════════════ PANEL GRID ══════════════ */
-    .panel-grid {
-      padding: 14px 12px 10px;
-      display: flex; flex-direction:column; gap:10px;
-      overflow-y: auto;
+      display:grid;
+      grid-template-columns:1fr;
+      padding-bottom:76px;
     }
     @media (min-width:780px) {
-      .panel-grid {
-        padding: 20px;
-        border-right: 1px solid var(--border);
-      }
+      .app-layout { grid-template-columns:1fr 360px; height:calc(100vh - 50px); padding-bottom:0; overflow:hidden; }
     }
 
-    .panel-header {
-      display:flex; align-items:center; justify-content:space-between;
-      gap:8px; flex-wrap:wrap;
-    }
-    .panel-label {
-      font-size:11px; font-weight:700; letter-spacing:2px;
-      text-transform:uppercase; color:var(--text-dim);
-    }
-    .btn-group { display:flex; gap:6px; }
+    /* ══ LEFT — GRID PANEL ══ */
+    .panel-grid { padding:12px; display:flex; flex-direction:column; gap:10px; overflow-y:auto; }
+    @media (min-width:780px) { .panel-grid { padding:16px; border-right:1px solid var(--border); } }
+
+    .row-btns { display:flex; gap:6px; flex-wrap:wrap; }
     .btn-sm {
-      padding:6px 14px; border-radius:8px; border:none;
-      font-family:'Inter',sans-serif; font-weight:600; font-size:12px;
-      cursor:pointer; transition:all 0.15s;
+      padding:6px 13px; border-radius:8px; border:none;
+      font-family:'Inter',sans-serif; font-weight:600; font-size:12px; cursor:pointer; transition:all 0.15s;
     }
-    .btn-sm:hover { transform:translateY(-1px); }
-    .btn-sm:active { transform:scale(0.96); }
-    .btn-reset  { background:rgba(245,197,24,0.12); color:var(--gold); border:1px solid rgba(245,197,24,0.25); }
-    .btn-clear  { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.6); border:1px solid var(--border); }
-    .btn-all    { background:rgba(224,32,32,0.12); color:#ff7070; border:1px solid rgba(224,32,32,0.3); }
+    .btn-sm:active { transform:scale(0.93); }
+    .btn-reset { background:rgba(245,197,24,0.12); color:var(--gold); border:1px solid rgba(245,197,24,0.25); }
+    .btn-clear { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.6); border:1px solid var(--border); }
+    .btn-all   { background:rgba(224,32,32,0.12); color:#ff7070; border:1px solid rgba(224,32,32,0.3); }
 
-    /* ══════════════ NUMBER GRID ══════════════ */
-    .number-grid {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 4px;
-      width: 100%;
-    }
+    .number-grid { display:grid; grid-template-columns:repeat(10,1fr); gap:4px; }
     .cell {
-      aspect-ratio: 1;
-      display:flex; align-items:center; justify-content:center;
-      border-radius:7px;
-      font-family:'Montserrat',sans-serif; font-weight:900;
-      font-size: clamp(11px, 3.5vw, 20px);
-      cursor:pointer; user-select:none;
-      border: 1.5px solid rgba(255,255,255,0.09);
-      background: rgba(255,255,255,0.04);
-      color: #fff;
-      transition: background 0.15s, border-color 0.15s, transform 0.1s;
-      position:relative; overflow:hidden;
-      -webkit-tap-highlight-color: transparent;
+      aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+      border-radius:7px; font-family:'Montserrat',sans-serif; font-weight:900;
+      font-size:clamp(10px,3.5vw,20px); cursor:pointer; user-select:none;
+      border:1.5px solid rgba(255,255,255,0.09); background:rgba(255,255,255,0.04); color:#fff;
+      transition:background 0.12s,border-color 0.12s; position:relative; overflow:hidden;
+      -webkit-tap-highlight-color:transparent;
     }
-    .cell:active { transform:scale(0.9); }
-    @media (min-width:780px) {
-      .cell:hover:not(.sold) {
-        border-color: rgba(255,255,255,0.28);
-        background: rgba(255,255,255,0.09);
-      }
-    }
-    .cell.sold {
-      background: var(--red-dim);
-      border-color: rgba(200,20,20,0.5);
-      color: rgba(255,255,255,0.18);
-    }
-    .cell.sold::after {
-      content:"✕";
-      position:absolute;
-      font-size: clamp(14px, 4.5vw, 26px);
-      color:rgba(255,50,50,0.85);
-      font-weight:900;
-    }
+    .cell:active { transform:scale(0.88); }
+    .cell.sold { background:var(--red-dim); border-color:rgba(200,20,20,0.5); color:rgba(255,255,255,0.18); }
+    .cell.sold::after { content:"✕"; position:absolute; font-size:clamp(13px,4.5vw,26px); color:rgba(255,50,50,0.85); font-weight:900; }
 
-    /* ══════════════ PANEL PREVIEW ══════════════ */
-    .panel-preview {
-      display:flex; flex-direction:column; gap:10px;
-      padding: 10px 12px 14px;
-      background: var(--surface);
+    /* ══ ADJUST PANEL ══ */
+    .adjust-panel {
+      background:var(--surface2); border:1px solid var(--border); border-radius:12px; overflow:hidden;
     }
-    @media (min-width:780px) {
-      .panel-preview {
-        padding: 20px;
-        overflow-y: auto;
-      }
+    .adjust-toggle {
+      width:100%; padding:11px 14px; display:flex; align-items:center; justify-content:space-between;
+      background:none; border:none; color:#fff; font-family:'Inter',sans-serif; font-weight:600; font-size:13px;
+      cursor:pointer; gap:8px;
     }
+    .adjust-toggle span:last-child { font-size:11px; color:var(--text-dim); transition:transform 0.2s; }
+    .adjust-toggle.open span:last-child { transform:rotate(180deg); }
+    .adjust-body { display:none; padding:4px 14px 14px; flex-direction:column; gap:12px; }
+    .adjust-body.open { display:flex; }
 
-    .preview-label {
-      font-size:11px; font-weight:700; letter-spacing:2px;
-      text-transform:uppercase; color:var(--text-dim);
-      text-align:center;
+    .slider-row { display:flex; flex-direction:column; gap:4px; }
+    .slider-label { display:flex; justify-content:space-between; font-size:12px; color:var(--text-dim); }
+    .slider-label strong { color:#fff; font-size:12px; }
+    input[type=range] {
+      width:100%; height:4px; border-radius:4px; appearance:none;
+      background:linear-gradient(to right, var(--gold) 0%, var(--gold) var(--pct,50%), rgba(255,255,255,0.15) var(--pct,50%));
+      cursor:pointer; outline:none;
     }
+    input[type=range]::-webkit-slider-thumb { appearance:none; width:16px; height:16px; border-radius:50%; background:var(--gold); box-shadow:0 0 6px rgba(245,197,24,0.5); }
+    input[type=range]::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--gold); border:none; }
+    .btn-reset-pos { align-self:flex-start; padding:5px 12px; border-radius:7px; border:none; background:rgba(255,255,255,0.06); color:var(--text-dim); font-size:11px; font-weight:600; cursor:pointer; }
+    .btn-reset-pos:hover { color:#fff; }
 
-    .preview-container {
-      width:100%;
-      border-radius:12px;
-      overflow:hidden;
-      border: 1px solid var(--border);
-      background:#000;
-      position:relative;
-    }
-    .preview-container canvas {
-      width:100%;
-      height:auto;
-      display:block;
-    }
-    .preview-loading {
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      background:rgba(0,0,0,0.7);
-      font-size:13px; color:var(--text-dim);
-      transition: opacity 0.3s;
-    }
-    .preview-loading.hidden { opacity:0; pointer-events:none; }
+    /* ══ RIGHT — PREVIEW PANEL ══ */
+    .panel-preview { display:flex; flex-direction:column; gap:10px; padding:10px 12px 14px; background:var(--surface); }
+    @media (min-width:780px) { .panel-preview { padding:16px; overflow-y:auto; } }
 
+    .sec-label { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); text-align:center; }
+
+    /* Upload zone */
+    .upload-zone {
+      width:100%; border-radius:12px; border:2px dashed rgba(245,197,24,0.4);
+      background:rgba(245,197,24,0.04); padding:24px 14px;
+      display:flex; flex-direction:column; align-items:center; gap:8px;
+      cursor:pointer; transition:border-color 0.2s,background 0.2s; text-align:center;
+    }
+    .upload-zone:hover,.upload-zone.drag-over { border-color:var(--gold); background:rgba(245,197,24,0.09); }
+    .upload-zone.hidden { display:none; }
+    .upload-icon { font-size:32px; }
+    .upload-title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:14px; color:var(--gold); }
+    .upload-sub { font-size:11px; color:var(--text-dim); line-height:1.5; }
+    .upload-cta { padding:8px 18px; border-radius:7px; background:rgba(245,197,24,0.14); border:1px solid rgba(245,197,24,0.3); color:var(--gold); font-weight:700; font-size:12px; pointer-events:none; }
+
+    .flyer-bar { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 11px; background:rgba(245,197,24,0.06); border:1px solid rgba(245,197,24,0.18); border-radius:9px; font-size:12px; }
+    .flyer-bar.hidden { display:none; }
+    .flyer-bar span { color:rgba(255,255,255,0.6); }
+    .flyer-bar strong { color:var(--gold); }
+    .btn-change { padding:4px 11px; border-radius:6px; border:none; background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.55); font-size:11px; font-weight:600; cursor:pointer; }
+    .btn-change:hover { color:#fff; background:rgba(255,255,255,0.12); }
+
+    /* Preview canvas */
+    .preview-wrap { width:100%; border-radius:10px; overflow:hidden; border:1px solid var(--border); background:#000; position:relative; }
+    .preview-wrap canvas { width:100%; height:auto; display:block; }
+    .preview-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); font-size:13px; color:var(--text-dim); transition:opacity 0.3s; }
+    .preview-overlay.hidden { opacity:0; pointer-events:none; }
+
+    /* Download */
     .btn-download {
-      width:100%;
-      padding:14px;
-      border:none; border-radius:12px;
-      background: linear-gradient(135deg, #e02020, #8b0e0e);
-      color:#fff;
-      font-family:'Montserrat',sans-serif; font-weight:800; font-size:15px;
-      cursor:pointer; letter-spacing:0.5px;
-      box-shadow: 0 4px 20px rgba(224,32,32,0.35);
-      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      width:100%; padding:13px; border:none; border-radius:11px;
+      background:linear-gradient(135deg,#e02020,#8b0e0e); color:#fff;
+      font-family:'Montserrat',sans-serif; font-weight:800; font-size:14px; cursor:pointer; letter-spacing:0.5px;
+      box-shadow:0 4px 18px rgba(224,32,32,0.32); transition:transform 0.15s,opacity 0.15s;
     }
-    .btn-download:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(224,32,32,0.45); }
+    .btn-download:hover { transform:translateY(-2px); }
     .btn-download:active { transform:scale(0.97); }
-    .btn-download:disabled { opacity:0.45; cursor:not-allowed; transform:none; }
+    .btn-download:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
 
-    /* ══════════════ STICKY BAR (mobile only) ══════════════ */
-    .sticky-bar {
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px;
-      position:fixed; bottom:0; left:0; right:0; z-index:200;
-      background: rgba(13,13,17,0.96);
-      border-top:1px solid var(--border);
-      padding:10px 14px;
-      backdrop-filter:blur(12px);
-    }
+    /* Sticky bar mobile */
+    .sticky-bar { display:flex; align-items:center; justify-content:space-between; gap:10px; position:fixed; bottom:0; left:0; right:0; z-index:200; background:rgba(13,13,17,0.97); border-top:1px solid var(--border); padding:9px 13px; backdrop-filter:blur(12px); }
     @media (min-width:780px) { .sticky-bar { display:none; } }
     .sticky-info { font-size:13px; color:var(--text-dim); }
-    .sticky-info strong { color:#fff; font-size:15px; }
-    .btn-sticky-download {
-      flex-shrink:0;
-      padding:11px 22px;
-      border:none; border-radius:10px;
-      background: linear-gradient(135deg,#e02020,#8b0e0e);
-      color:#fff;
-      font-family:'Montserrat',sans-serif; font-weight:800; font-size:13px;
-      cursor:pointer;
-      box-shadow:0 3px 14px rgba(224,32,32,0.3);
-      transition: opacity 0.15s;
-    }
-    .btn-sticky-download:disabled { opacity:0.45; cursor:not-allowed; }
+    .sticky-info strong { color:#fff; font-size:14px; }
+    .btn-sticky { flex-shrink:0; padding:10px 20px; border:none; border-radius:9px; background:linear-gradient(135deg,#e02020,#8b0e0e); color:#fff; font-family:'Montserrat',sans-serif; font-weight:800; font-size:13px; cursor:pointer; }
+    .btn-sticky:disabled { opacity:0.4; }
 
-    /* ══════════════ UPLOAD ZONE ══════════════ */
-    .upload-zone {
-      width:100%; border-radius:12px;
-      border: 2px dashed rgba(245,197,24,0.4);
-      background: rgba(245,197,24,0.04);
-      padding: 28px 16px;
-      display:flex; flex-direction:column; align-items:center; gap:10px;
-      cursor:pointer; transition: border-color 0.2s, background 0.2s;
-      text-align:center;
-    }
-    .upload-zone:hover, .upload-zone.drag-over {
-      border-color: var(--gold);
-      background: rgba(245,197,24,0.08);
-    }
-    .upload-zone.hidden { display:none; }
-    .upload-icon { font-size:34px; line-height:1; }
-    .upload-title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:15px; color:var(--gold); }
-    .upload-sub { font-size:12px; color:var(--text-dim); line-height:1.5; }
-    .upload-btn-label {
-      display:inline-block;
-      padding:9px 22px; border-radius:8px;
-      background: rgba(245,197,24,0.15);
-      border: 1px solid rgba(245,197,24,0.35);
-      color: var(--gold); font-weight:700; font-size:13px;
-      cursor:pointer; transition:background 0.15s;
-    }
-    .upload-btn-label:hover { background:rgba(245,197,24,0.25); }
-
-    .flyer-loaded-bar {
-      display:flex; align-items:center; justify-content:space-between;
-      gap:8px; padding:8px 12px;
-      background:rgba(245,197,24,0.06);
-      border:1px solid rgba(245,197,24,0.18);
-      border-radius:9px; font-size:12px;
-    }
-    .flyer-loaded-bar.hidden { display:none; }
-    .flyer-loaded-bar span { color:rgba(255,255,255,0.6); }
-    .flyer-loaded-bar strong { color:var(--gold); }
-    .btn-change-flyer {
-      padding:5px 12px; border-radius:6px; border:none;
-      background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.55);
-      font-size:11px; font-weight:600; cursor:pointer;
-      transition:background 0.15s;
-    }
-    .btn-change-flyer:hover { background:rgba(255,255,255,0.12); color:#fff; }
-
-    /* ══════════════ TOAST ══════════════ */
-    .toast {
-      position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
-      background:#222; border:1px solid rgba(255,255,255,0.12);
-      border-radius:999px; padding:9px 22px;
-      font-size:13px; font-weight:600;
-      z-index:999; white-space:nowrap;
-      opacity:0; transition:opacity 0.3s;
-      pointer-events:none;
-    }
-    @media (min-width:780px) { .toast { bottom:24px; } }
+    /* Toast */
+    .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#1e1e2a; border:1px solid rgba(255,255,255,0.12); border-radius:999px; padding:8px 20px; font-size:13px; font-weight:600; z-index:999; white-space:nowrap; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+    @media (min-width:780px) { .toast { bottom:20px; } }
     .toast.show { opacity:1; }
   </style>
 </head>
@@ -292,427 +159,436 @@
 
 <header>
   <div class="logo">RIFAS <span>RODRÍGUEZ</span></div>
-  <div class="header-info">
-    <div class="badge">Vendidos: <strong id="soldCount">0</strong>/100</div>
-  </div>
+  <div class="badge">Vendidos: <strong id="soldCount">0</strong>/100</div>
 </header>
 
 <div class="app-layout">
 
-  <!-- ── GRID PANEL ── -->
+  <!-- ══ LEFT: GRID + ADJUST ══ -->
   <section class="panel-grid">
-    <div class="panel-header">
-      <span class="panel-label">Toca para marcar · Toca para desmarcar</span>
-      <div class="btn-group">
-        <button class="btn-sm btn-reset"  onclick="resetToDefault()">↺ Reset</button>
-        <button class="btn-sm btn-all"    onclick="markAll()">Marcar todos</button>
-        <button class="btn-sm btn-clear"  onclick="clearAll()">Limpiar</button>
+    <div class="row-btns">
+      <button class="btn-sm btn-reset" onclick="resetToDefault()">↺ Reset</button>
+      <button class="btn-sm btn-all"   onclick="markAll()">Marcar todos</button>
+      <button class="btn-sm btn-clear" onclick="clearAll()">Limpiar</button>
+    </div>
+
+    <div class="number-grid" id="numberGrid"></div>
+
+    <!-- Ajustar posición de tabla -->
+    <div class="adjust-panel">
+      <button class="adjust-toggle" id="adjustToggle" onclick="toggleAdjust()">
+        <span>⚙️ Ajustar posición de la tabla</span>
+        <span>▼</span>
+      </button>
+      <div class="adjust-body" id="adjustBody">
+        <div class="slider-row">
+          <div class="slider-label"><span>Tabla — posición arriba/abajo</span><strong id="valGridY">26.9%</strong></div>
+          <input type="range" id="slGridY" min="0" max="80" step="0.1" value="26.9" oninput="onSlider()">
+        </div>
+        <div class="slider-row">
+          <div class="slider-label"><span>Sombra oscura — empieza en</span><strong id="valOverlayY">26.1%</strong></div>
+          <input type="range" id="slOverlayY" min="0" max="80" step="0.1" value="26.1" oninput="onSlider()">
+        </div>
+        <div class="slider-row">
+          <div class="slider-label"><span>Tabla — margen izq/der</span><strong id="valMarginX">3.1%</strong></div>
+          <input type="range" id="slMarginX" min="0" max="20" step="0.1" value="3.1" oninput="onSlider()">
+        </div>
+        <div class="slider-row">
+          <div class="slider-label"><span>Tabla — margen inferior</span><strong id="valMarginB">4.2%</strong></div>
+          <input type="range" id="slMarginB" min="0" max="20" step="0.1" value="4.2" oninput="onSlider()">
+        </div>
+        <button class="btn-reset-pos" onclick="resetPosition()">↺ Posición por defecto</button>
       </div>
     </div>
-    <div class="number-grid" id="numberGrid"></div>
   </section>
 
-  <!-- ── PREVIEW PANEL ── -->
+  <!-- ══ RIGHT: PREVIEW + DOWNLOAD ══ -->
   <section class="panel-preview">
-    <div class="preview-label">Vista previa</div>
+    <div class="sec-label">Vista previa</div>
 
-    <!-- Upload zone (visible cuando no hay imagen) -->
     <div class="upload-zone" id="uploadZone"
          onclick="document.getElementById('flyerInput').click()"
-         ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+         ondragover="onDragOver(event)" ondragleave="onDragLeave()" ondrop="onDrop(event)">
       <div class="upload-icon">🖼️</div>
-      <div class="upload-title">Carga el flyer base</div>
-      <div class="upload-sub">Arrastra la imagen aquí<br>o toca para seleccionar</div>
-      <label class="upload-btn-label">Seleccionar imagen</label>
+      <div class="upload-title">Carga tu flyer</div>
+      <div class="upload-sub">Arrastra la imagen aquí o toca para seleccionar<br><em style="font-size:10px;opacity:.6">(se guarda automáticamente)</em></div>
+      <div class="upload-cta">Seleccionar imagen</div>
     </div>
     <input type="file" id="flyerInput" accept="image/*" style="display:none" onchange="onFlyerSelected(event)"/>
 
-    <!-- Barra cuando imagen ya está cargada -->
-    <div class="flyer-loaded-bar hidden" id="flyerLoadedBar">
-      <span>✅ <strong id="flyerName">flyer_base.jpeg</strong> cargada</span>
-      <button class="btn-change-flyer" onclick="document.getElementById('flyerInput').click()">Cambiar</button>
+    <div class="flyer-bar hidden" id="flyerBar">
+      <span>✅ <strong id="flyerName">—</strong></span>
+      <button class="btn-change" onclick="document.getElementById('flyerInput').click()">Cambiar imagen</button>
     </div>
 
-    <div class="preview-container" id="previewContainer">
+    <div class="preview-wrap" id="previewWrap">
       <canvas id="previewCanvas"></canvas>
-      <div class="preview-loading" id="previewLoading">⏳ Cargando…</div>
+      <div class="preview-overlay" id="previewOverlay">⏳ Cargando…</div>
     </div>
-    <!-- Download button for desktop -->
-    <button class="btn-download" id="btnDownloadDesktop" onclick="downloadImage()">⬇ Descargar PNG</button>
+
+    <button class="btn-download" id="btnDL" onclick="downloadImage()">⬇ Descargar PNG</button>
   </section>
 </div>
 
-<!-- Sticky bar (mobile) -->
+<!-- Mobile sticky bar -->
 <div class="sticky-bar">
-  <div class="sticky-info">Vendidos: <strong id="soldCountMobile">0</strong>/100</div>
-  <button class="btn-sticky-download" id="btnDownloadMobile" onclick="downloadImage()">⬇ Descargar</button>
+  <div class="sticky-info">Vendidos: <strong id="soldCountM">0</strong>/100</div>
+  <button class="btn-sticky" id="btnDLM" onclick="downloadImage()">⬇ Descargar</button>
 </div>
 
 <div class="toast" id="toast"></div>
-
 <canvas id="hiddenCanvas" style="display:none"></canvas>
 
 <script>
-// ═══════════════════════════════════════════
-// CONSTANTS
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
+// CONSTANTS & DEFAULTS
+// ══════════════════════════════════════
 const FULL_W = 1536, FULL_H = 2752;
-const STORAGE_KEY  = 'rifas_sold_v1';
-const FLYER_KEY    = 'rifas_flyer_v1';
-const FLYERNAME_KEY= 'rifas_flyername_v1';
+const FREE_NUMBERS = new Set(['00','40','49','50','54','55','58','60','61','64','65','66','70','75','77','87','88','89','91','95','98','99']);
 
-// Default: todos marcados MENOS estos
-const FREE_NUMBERS = new Set([
-  '00','40','49','50','54','55','58',
-  '60','61','64','65','66','70','75','77',
-  '87','88','89','91','95','98','99'
-]);
+const DEFAULT_POS = { overlayY:26.1, gridY:26.9, marginX:3.1, marginB:4.2 };
 
-function buildDefaultSold() {
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let sold   = new Set();
+let bgImage = null;
+let pos = { ...DEFAULT_POS };
+
+// ══════════════════════════════════════
+// INDEXEDDB — IMAGE STORAGE
+// ══════════════════════════════════════
+function openDB() {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open('rifasDB', 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('files');
+    req.onsuccess  = e => res(e.target.result);
+    req.onerror    = e => rej(e);
+  });
+}
+async function dbPut(key, value) {
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('files','readwrite');
+    tx.objectStore('files').put(value, key);
+    tx.oncomplete = res; tx.onerror = rej;
+  });
+}
+async function dbGet(key) {
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('files','readonly');
+    const req = tx.objectStore('files').get(key);
+    req.onsuccess = e => res(e.target.result);
+    req.onerror   = rej;
+  });
+}
+
+// ══════════════════════════════════════
+// SOLD NUMBERS — localStorage
+// ══════════════════════════════════════
+function saveSold() { localStorage.setItem('rifas_sold', JSON.stringify([...sold])); }
+function loadSold() {
+  try {
+    const r = localStorage.getItem('rifas_sold');
+    if (r) { const a = JSON.parse(r); if (a.length) return new Set(a); }
+  } catch(e) {}
+  return buildDefault();
+}
+function buildDefault() {
   const s = new Set();
-  for (let i = 0; i < 100; i++) {
-    const v = i.toString().padStart(2,'0');
-    if (!FREE_NUMBERS.has(v)) s.add(v);
-  }
+  for (let i=0;i<100;i++) { const v=i.toString().padStart(2,'0'); if (!FREE_NUMBERS.has(v)) s.add(v); }
   return s;
 }
 
-// ═══════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════
-let sold = new Set();
-let bgImage = null;
-
-// ═══════════════════════════════════════════
-// LOAD / SAVE — NUMBERS
-// ═══════════════════════════════════════════
-function saveSold() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...sold]));
+// ══════════════════════════════════════
+// POSITION — localStorage
+// ══════════════════════════════════════
+function savePos() { localStorage.setItem('rifas_pos', JSON.stringify(pos)); }
+function loadPos() {
+  try { const r=localStorage.getItem('rifas_pos'); if(r) return {...DEFAULT_POS,...JSON.parse(r)}; } catch(e) {}
+  return {...DEFAULT_POS};
 }
 
-function loadSold() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const arr = JSON.parse(raw);
-      if (Array.isArray(arr) && arr.length > 0) return new Set(arr);
-    }
-  } catch(e) {}
-  return buildDefaultSold();
+// ══════════════════════════════════════
+// FLYER IMAGE
+// ══════════════════════════════════════
+async function saveFlyerToDB(blob, name) {
+  await dbPut('flyer',      blob);
+  await dbPut('flyerName',  name);
 }
 
-// ═══════════════════════════════════════════
-// LOAD / SAVE — FLYER IMAGE
-// ═══════════════════════════════════════════
-function saveFlyerToStorage(dataUrl, name) {
-  try {
-    localStorage.setItem(FLYER_KEY, dataUrl);
-    localStorage.setItem(FLYERNAME_KEY, name || 'flyer');
-  } catch(e) {
-    showToast('⚠️ Imagen muy grande para guardar, se usará esta sesión');
-  }
+async function loadFlyerFromDB() {
+  const blob = await dbGet('flyer');
+  const name = await dbGet('flyerName');
+  return { blob, name };
 }
 
-function loadFlyerFromStorage() {
-  return {
-    dataUrl: localStorage.getItem(FLYER_KEY),
-    name:    localStorage.getItem(FLYERNAME_KEY) || 'flyer'
-  };
-}
-
-function setFlyerImage(dataUrl, name) {
+function setFlyerFromBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
   const img = new Image();
   img.onload = () => {
     bgImage = img;
-    // Show loaded bar, hide upload zone
+    URL.revokeObjectURL(url);
     document.getElementById('uploadZone').classList.add('hidden');
-    document.getElementById('flyerLoadedBar').classList.remove('hidden');
-    document.getElementById('flyerName').textContent = name;
-    document.getElementById('previewLoading').classList.add('hidden');
-    schedulePreviewUpdate();
+    document.getElementById('flyerBar').classList.remove('hidden');
+    document.getElementById('flyerName').textContent = name || 'imagen';
+    document.getElementById('previewOverlay').classList.add('hidden');
+    schedulePreview();
   };
-  img.onerror = () => showToast('❌ No se pudo cargar la imagen');
-  img.src = dataUrl;
+  img.onerror = () => { URL.revokeObjectURL(url); showToast('❌ Error cargando imagen'); };
+  img.src = url;
 }
 
-// File input handler
 function onFlyerSelected(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const dataUrl = ev.target.result;
-    saveFlyerToStorage(dataUrl, file.name);
-    setFlyerImage(dataUrl, file.name);
-    showToast('🖼️ Imagen cargada');
-  };
-  reader.readAsDataURL(file);
-  e.target.value = '';
+  const file = e.target.files[0]; if (!file) return;
+  saveFlyerToDB(file, file.name).catch(()=>{});
+  setFlyerFromBlob(file, file.name);
+  showToast('🖼️ Imagen guardada');
+  e.target.value='';
 }
 
-// Drag & drop
-function onDragOver(e) { e.preventDefault(); document.getElementById('uploadZone').classList.add('drag-over'); }
+function onDragOver(e)  { e.preventDefault(); document.getElementById('uploadZone').classList.add('drag-over'); }
 function onDragLeave()  { document.getElementById('uploadZone').classList.remove('drag-over'); }
 function onDrop(e) {
-  e.preventDefault();
-  document.getElementById('uploadZone').classList.remove('drag-over');
+  e.preventDefault(); document.getElementById('uploadZone').classList.remove('drag-over');
   const file = e.dataTransfer.files[0];
-  if (!file || !file.type.startsWith('image/')) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const dataUrl = ev.target.result;
-    saveFlyerToStorage(dataUrl, file.name);
-    setFlyerImage(dataUrl, file.name);
-    showToast('🖼️ Imagen cargada');
-  };
-  reader.readAsDataURL(file);
+  if (!file||!file.type.startsWith('image/')) return;
+  saveFlyerToDB(file, file.name).catch(()=>{});
+  setFlyerFromBlob(file, file.name);
+  showToast('🖼️ Imagen guardada');
 }
 
-// ═══════════════════════════════════════════
-// BUILD GRID
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
+// GRID CELLS
+// ══════════════════════════════════════
 const gridEl = document.getElementById('numberGrid');
-
-for (let i = 0; i < 100; i++) {
+for (let i=0;i<100;i++) {
   const val = i.toString().padStart(2,'0');
   const cell = document.createElement('div');
-  cell.className = 'cell';
-  cell.textContent = val;
-  cell.id = 'c' + val;
-  cell.addEventListener('click', () => toggle(val));
+  cell.className='cell'; cell.textContent=val; cell.id='c'+val;
+  cell.addEventListener('click',()=>toggle(val));
   gridEl.appendChild(cell);
 }
 
 function toggle(val) {
   if (sold.has(val)) { sold.delete(val); document.getElementById('c'+val).classList.remove('sold'); }
   else               { sold.add(val);    document.getElementById('c'+val).classList.add('sold'); }
-  updateCounters();
-  saveSold();
-  schedulePreviewUpdate();
+  updateCounters(); saveSold(); schedulePreview();
 }
 
 function applyState() {
   document.querySelectorAll('.cell').forEach(c => {
-    const val = c.textContent;
-    if (sold.has(val)) c.classList.add('sold');
-    else c.classList.remove('sold');
+    c.classList.toggle('sold', sold.has(c.textContent));
   });
   updateCounters();
 }
 
 function updateCounters() {
-  document.getElementById('soldCount').textContent = sold.size;
-  document.getElementById('soldCountMobile').textContent = sold.size;
+  document.getElementById('soldCount').textContent  = sold.size;
+  document.getElementById('soldCountM').textContent = sold.size;
 }
 
-function resetToDefault() {
-  sold = buildDefaultSold();
-  applyState();
-  saveSold();
-  schedulePreviewUpdate();
+function resetToDefault() { sold=buildDefault(); applyState(); saveSold(); schedulePreview(); }
+function markAll()        { for(let i=0;i<100;i++) sold.add(i.toString().padStart(2,'0')); applyState(); saveSold(); schedulePreview(); }
+function clearAll()       { sold.clear(); applyState(); saveSold(); schedulePreview(); }
+
+// ══════════════════════════════════════
+// SLIDERS
+// ══════════════════════════════════════
+function applySliders() {
+  const ids = ['slOverlayY','slGridY','slMarginX','slMarginB'];
+  const vals = ['valOverlayY','valGridY','valMarginX','valMarginB'];
+  const keys = ['overlayY','gridY','marginX','marginB'];
+  ids.forEach((id,i) => {
+    const el = document.getElementById(id);
+    const v  = parseFloat(el.value);
+    pos[keys[i]] = v;
+    document.getElementById(vals[i]).textContent = v.toFixed(1)+'%';
+    // update track fill
+    const max = parseFloat(el.max), min = parseFloat(el.min);
+    el.style.setProperty('--pct', ((v-min)/(max-min)*100)+'%');
+  });
 }
 
-function markAll() {
-  for (let i = 0; i < 100; i++) sold.add(i.toString().padStart(2,'0'));
-  applyState();
-  saveSold();
-  schedulePreviewUpdate();
+function onSlider()  { applySliders(); savePos(); schedulePreview(); }
+
+function resetPosition() {
+  pos = {...DEFAULT_POS};
+  document.getElementById('slOverlayY').value = DEFAULT_POS.overlayY;
+  document.getElementById('slGridY').value    = DEFAULT_POS.gridY;
+  document.getElementById('slMarginX').value  = DEFAULT_POS.marginX;
+  document.getElementById('slMarginB').value  = DEFAULT_POS.marginB;
+  applySliders(); savePos(); schedulePreview();
 }
 
-function clearAll() {
-  sold.clear();
-  applyState();
-  saveSold();
-  schedulePreviewUpdate();
+function setSlidersFromPos() {
+  document.getElementById('slOverlayY').value = pos.overlayY;
+  document.getElementById('slGridY').value    = pos.gridY;
+  document.getElementById('slMarginX').value  = pos.marginX;
+  document.getElementById('slMarginB').value  = pos.marginB;
+  applySliders();
 }
 
-// ═══════════════════════════════════════════
-// DRAW (shared for preview & full-size)
-// ═══════════════════════════════════════════
-function drawRifa(ctx, w, h, soldSet) {
+function toggleAdjust() {
+  const btn  = document.getElementById('adjustToggle');
+  const body = document.getElementById('adjustBody');
+  btn.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+// ══════════════════════════════════════
+// DRAW
+// ══════════════════════════════════════
+function drawRifa(ctx, w, h, soldSet, p) {
   const scale = w / FULL_W;
-
-  // 1. Background
+  // Background
   if (bgImage) ctx.drawImage(bgImage, 0, 0, w, h);
   else { ctx.fillStyle='#111'; ctx.fillRect(0,0,w,h); }
 
-  // 2. Dark overlay
-  ctx.fillStyle = 'rgba(0,0,0,0.60)';
-  ctx.fillRect(0, 720 * scale, w, (FULL_H - 720) * scale);
+  // Dark overlay
+  const overlayStart = h * p.overlayY / 100;
+  ctx.fillStyle='rgba(0,0,0,0.60)';
+  ctx.fillRect(0, overlayStart, w, h - overlayStart);
 
-  // 3. Grid dimensions
-  const gridLeft = (FULL_W - 1440) / 2 * scale;
-  const gridTop  = 740 * scale;
-  const gridW    = 1440 * scale;
-  const gridH    = (FULL_H - 115 - 740) * scale;
+  // Grid bounds
+  const marginX = w * p.marginX / 100;
+  const gridTop  = h * p.gridY   / 100;
+  const gridBot  = h * (1 - p.marginB/100);
+  const gridLeft = marginX;
+  const gridW    = w - marginX * 2;
+  const gridH    = gridBot - gridTop;
   const cellW    = gridW / 10;
   const cellH    = gridH / 10;
-  const fontSize = Math.round(54 * scale);
-  const xFontSz  = Math.round(95 * scale);
+  const numSz    = Math.round(54 * scale);
+  const xSz      = Math.round(95 * scale);
 
-  for (let i = 0; i < 100; i++) {
-    const val  = i.toString().padStart(2,'0');
-    const col  = i % 10;
-    const row  = Math.floor(i / 10);
-    const x    = gridLeft + col * cellW;
-    const y    = gridTop  + row * cellH;
+  for (let i=0;i<100;i++) {
+    const val   = i.toString().padStart(2,'0');
+    const col   = i % 10;
+    const row   = Math.floor(i / 10);
+    const x     = gridLeft + col * cellW;
+    const y     = gridTop  + row * cellH;
     const isSold = soldSet.has(val);
 
-    // Cell bg
     ctx.fillStyle = isSold ? 'rgba(200,20,20,0.45)' : 'rgba(40,40,50,0.50)';
     ctx.fillRect(x, y, cellW, cellH);
 
-    // Cell border
-    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-    ctx.lineWidth   = Math.max(1, 2.5 * scale);
-    ctx.strokeRect(x + ctx.lineWidth/2, y + ctx.lineWidth/2, cellW - ctx.lineWidth, cellH - ctx.lineWidth);
+    const lw = Math.max(1, 2.5*scale);
+    ctx.strokeStyle='rgba(255,255,255,0.85)'; ctx.lineWidth=lw;
+    ctx.strokeRect(x+lw/2, y+lw/2, cellW-lw, cellH-lw);
 
-    // Number
     ctx.save();
-    ctx.font         = `900 ${fontSize}px 'Montserrat',sans-serif`;
-    ctx.textAlign    = 'center';
-    ctx.textBaseline = 'middle';
-    if (isSold) {
-      ctx.fillStyle = 'rgba(255,255,255,0.25)';
-    } else {
-      ctx.shadowColor = 'rgba(0,0,0,1)';
-      ctx.shadowBlur  = 14 * scale;
-      ctx.fillStyle   = '#ffffff';
-    }
-    ctx.fillText(val, x + cellW / 2, y + cellH / 2);
+    ctx.font=`900 ${numSz}px 'Montserrat',sans-serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    if (isSold) { ctx.fillStyle='rgba(255,255,255,0.25)'; }
+    else { ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=14*scale; ctx.fillStyle='#fff'; }
+    ctx.fillText(val, x+cellW/2, y+cellH/2);
     ctx.restore();
 
-    // X overlay
     if (isSold) {
       ctx.save();
-      ctx.font         = `900 ${xFontSz}px 'Montserrat',sans-serif`;
-      ctx.textAlign    = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle    = 'rgba(255,0,0,0.85)';
-      ctx.shadowColor  = 'rgba(0,0,0,0.9)';
-      ctx.shadowBlur   = 10 * scale;
-      ctx.fillText('X', x + cellW / 2, y + cellH / 2);
+      ctx.font=`900 ${xSz}px 'Montserrat',sans-serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillStyle='rgba(255,0,0,0.85)'; ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=10*scale;
+      ctx.fillText('X', x+cellW/2, y+cellH/2);
       ctx.restore();
     }
   }
 }
 
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
 // PREVIEW
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
 let previewPending = false;
-
-function schedulePreviewUpdate() {
+function schedulePreview() {
   if (previewPending) return;
   previewPending = true;
-  requestAnimationFrame(() => {
-    previewPending = false;
-    updatePreview();
-  });
+  requestAnimationFrame(()=>{ previewPending=false; updatePreview(); });
 }
 
 function updatePreview() {
   const canvas = document.getElementById('previewCanvas');
-  const container = document.getElementById('previewContainer');
-  const cw = container.clientWidth || 300;
+  const wrap   = document.getElementById('previewWrap');
+  const cw = wrap.clientWidth || 300;
   const ch = Math.round(cw * FULL_H / FULL_W);
-
-  // Set actual pixel resolution (2x for sharpness on mobile)
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width  = cw * dpr;
-  canvas.height = ch * dpr;
-  canvas.style.width  = cw + 'px';
-  canvas.style.height = ch + 'px';
-
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  canvas.width=cw*dpr; canvas.height=ch*dpr;
+  canvas.style.width=cw+'px'; canvas.style.height=ch+'px';
   const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-
-  drawRifa(ctx, cw, ch, sold);
+  ctx.scale(dpr,dpr);
+  drawRifa(ctx, cw, ch, sold, pos);
 }
 
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
 // DOWNLOAD
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
 async function downloadImage() {
-  const btnD = document.getElementById('btnDownloadDesktop');
-  const btnM = document.getElementById('btnDownloadMobile');
-  btnD.disabled = true; btnM.disabled = true;
+  const btnD=document.getElementById('btnDL'), btnM=document.getElementById('btnDLM');
+  btnD.disabled=true; btnM.disabled=true;
   showToast('⏳ Generando imagen…');
-
   try {
-    const canvas = document.getElementById('hiddenCanvas');
-    canvas.width  = FULL_W;
-    canvas.height = FULL_H;
-    const ctx = canvas.getContext('2d');
+    const canvas=document.getElementById('hiddenCanvas');
+    canvas.width=FULL_W; canvas.height=FULL_H;
+    const ctx=canvas.getContext('2d');
     await document.fonts.ready;
-    drawRifa(ctx, FULL_W, FULL_H, sold);
-
-    canvas.toBlob(blob => {
-      const url = URL.createObjectURL(blob);
-      const a   = document.createElement('a');
-      a.href     = url;
-      a.download = 'rifas_numeros.png';
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 8000);
+    drawRifa(ctx, FULL_W, FULL_H, sold, pos);
+    canvas.toBlob(blob=>{
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download='rifas_numeros.png'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url),8000);
       showToast('✅ ¡Imagen descargada!');
-      btnD.disabled = false; btnM.disabled = false;
-    }, 'image/png');
+      btnD.disabled=false; btnM.disabled=false;
+    },'image/png');
   } catch(err) {
-    console.error(err);
-    showToast('❌ Error generando imagen');
-    btnD.disabled = false; btnM.disabled = false;
+    console.error(err); showToast('❌ Error'); btnD.disabled=false; btnM.disabled=false;
   }
 }
 
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
 // TOAST
-// ═══════════════════════════════════════════
-let toastTimer = null;
+// ══════════════════════════════════════
+let toastT=null;
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3200);
 }
 
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════
-(async () => {
-  // Load saved numbers
-  sold = loadSold();
-  applyState();
+// ══════════════════════════════════════
+(async()=>{
+  // Numbers
+  sold = loadSold(); applyState();
 
-  // Try loading flyer from localStorage first
-  const saved = loadFlyerFromStorage();
-  if (saved.dataUrl) {
-    setFlyerImage(saved.dataUrl, saved.name);
-  } else {
-    // Try to fetch flyer_base.jpeg (works if served from same origin)
-    try {
-      const resp = await fetch('flyer_base.jpeg');
-      if (resp.ok) {
-        const blob = await resp.blob();
-        const reader = new FileReader();
-        reader.onload = ev => {
-          const dataUrl = ev.target.result;
-          saveFlyerToStorage(dataUrl, 'flyer_base.jpeg');
-          setFlyerImage(dataUrl, 'flyer_base.jpeg');
-        };
-        reader.readAsDataURL(blob);
-      } else {
-        // No image found — show upload zone
-        document.getElementById('previewLoading').classList.add('hidden');
+  // Position sliders
+  pos = loadPos(); setSlidersFromPos();
+
+  // Flyer image — try IndexedDB first
+  try {
+    const { blob, name } = await loadFlyerFromDB();
+    if (blob) {
+      setFlyerFromBlob(blob, name||'flyer_base.jpeg');
+    } else {
+      // Try fetching flyer_base.jpeg if served locally
+      try {
+        const resp = await fetch('flyer_base.jpeg');
+        if (resp.ok) {
+          const blob2 = await resp.blob();
+          await saveFlyerToDB(blob2,'flyer_base.jpeg');
+          setFlyerFromBlob(blob2,'flyer_base.jpeg');
+        } else {
+          document.getElementById('previewOverlay').classList.add('hidden');
+        }
+      } catch(e) {
+        document.getElementById('previewOverlay').classList.add('hidden');
       }
-    } catch(e) {
-      // Offline or no file — show upload zone
-      document.getElementById('previewLoading').classList.add('hidden');
     }
+  } catch(e) {
+    document.getElementById('previewOverlay').classList.add('hidden');
   }
 
-  // Re-render preview on resize
-  window.addEventListener('resize', () => schedulePreviewUpdate());
+  window.addEventListener('resize', schedulePreview);
 })();
 </script>
 </body>
