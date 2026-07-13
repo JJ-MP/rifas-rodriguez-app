@@ -1,407 +1,581 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rifas Rodríguez — Marcador de Números</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Rifas Rodríguez — Marcador</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --red:    #e02020;
-      --red-d:  #9b1010;
-      --gold:   #f5c518;
-      --bg:     #0e0e12;
-      --surface:#17171f;
-      --border: rgba(255,255,255,0.08);
+      --red:     #e02020;
+      --red-dim: rgba(200,20,20,0.42);
+      --gold:    #f5c518;
+      --bg:      #0d0d11;
+      --surface: #16161e;
+      --surface2:#1e1e2a;
+      --border:  rgba(255,255,255,0.07);
+      --text-dim:rgba(255,255,255,0.45);
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html, body {
+      height: 100%;
       background: var(--bg);
       color: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      font-family: 'Inter', sans-serif;
+      overscroll-behavior: none;
     }
 
-    /* ── HEADER ── */
+    /* ══════════════ HEADER ══════════════ */
     header {
-      width: 100%;
-      background: linear-gradient(135deg, #1a0505 0%, #2d0808 60%, #1a0505 100%);
-      border-bottom: 1px solid rgba(224,32,32,0.3);
-      padding: 18px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(12px);
+      position: sticky; top:0; z-index:200;
+      background: linear-gradient(135deg,#1c0404 0%,#300808 50%,#1c0404 100%);
+      border-bottom: 1px solid rgba(224,32,32,0.25);
+      padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
     }
-    header .logo {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 900;
-      font-size: 22px;
-      letter-spacing: 1px;
-      color: var(--gold);
-      text-shadow: 0 0 20px rgba(245,197,24,0.4);
+    .logo {
+      font-family:'Montserrat',sans-serif; font-weight:900; font-size:18px;
+      color: var(--gold); letter-spacing:1px; white-space:nowrap;
+      text-shadow: 0 0 18px rgba(245,197,24,0.35);
     }
-    header .logo span { color: #fff; }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
+    .logo span { color:#fff; }
+    .header-info {
+      display:flex; align-items:center; gap:10px; flex-shrink:0;
     }
-    .counter-badge {
+    .badge {
       background: rgba(224,32,32,0.15);
-      border: 1px solid rgba(224,32,32,0.4);
-      border-radius: 999px;
-      padding: 6px 18px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #ff6b6b;
+      border: 1px solid rgba(224,32,32,0.35);
+      border-radius:999px; padding:5px 14px;
+      font-size:12px; font-weight:600; color:#ff7070;
+      white-space:nowrap;
     }
-    .counter-badge strong { color: #fff; font-size: 16px; }
+    .badge strong { color:#fff; font-size:15px; }
 
-    /* ── MAIN ── */
-    main {
-      width: 100%;
-      max-width: 1100px;
-      padding: 32px 16px 60px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 28px;
+    /* ══════════════ LAYOUT ══════════════ */
+    .app-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      gap: 0;
+      padding-bottom: 80px; /* space for sticky bar */
     }
-
-    /* ── INSTRUCTIONS ── */
-    .instructions {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px 24px;
-      font-size: 14px;
-      color: rgba(255,255,255,0.6);
-      width: 100%;
-      text-align: center;
-      line-height: 1.6;
-    }
-    .instructions strong { color: var(--gold); }
-
-    /* ── CONTROLS ── */
-    .controls {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
-    }
-    .btn {
-      padding: 12px 28px;
-      border-radius: 10px;
-      border: none;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-      letter-spacing: 0.5px;
-    }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
-    .btn:active { transform: translateY(0); }
-
-    .btn-download {
-      background: linear-gradient(135deg, #e02020, #9b1010);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(224,32,32,0.35);
-      font-size: 15px;
-      padding: 14px 36px;
-    }
-    .btn-download:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .btn-clear {
-      background: rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.7);
-      border: 1px solid var(--border);
-    }
-    .btn-all {
-      background: rgba(224,32,32,0.12);
-      color: #ff6b6b;
-      border: 1px solid rgba(224,32,32,0.3);
+    @media (min-width: 780px) {
+      .app-layout {
+        grid-template-columns: 1fr 380px;
+        grid-template-rows: 1fr;
+        height: calc(100vh - 53px);
+        padding-bottom: 0;
+        overflow: hidden;
+      }
     }
 
-    /* ── GRID ── */
-    .grid-wrapper {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 24px;
+    /* ══════════════ PANEL GRID ══════════════ */
+    .panel-grid {
+      padding: 14px 12px 10px;
+      display: flex; flex-direction:column; gap:10px;
+      overflow-y: auto;
     }
-    .grid-title {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 800;
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
-      margin-bottom: 18px;
-      text-align: center;
+    @media (min-width:780px) {
+      .panel-grid {
+        padding: 20px;
+        border-right: 1px solid var(--border);
+      }
     }
+
+    .panel-header {
+      display:flex; align-items:center; justify-content:space-between;
+      gap:8px; flex-wrap:wrap;
+    }
+    .panel-label {
+      font-size:11px; font-weight:700; letter-spacing:2px;
+      text-transform:uppercase; color:var(--text-dim);
+    }
+    .btn-group { display:flex; gap:6px; }
+    .btn-sm {
+      padding:6px 14px; border-radius:8px; border:none;
+      font-family:'Inter',sans-serif; font-weight:600; font-size:12px;
+      cursor:pointer; transition:all 0.15s;
+    }
+    .btn-sm:hover { transform:translateY(-1px); }
+    .btn-sm:active { transform:scale(0.96); }
+    .btn-reset  { background:rgba(245,197,24,0.12); color:var(--gold); border:1px solid rgba(245,197,24,0.25); }
+    .btn-clear  { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.6); border:1px solid var(--border); }
+    .btn-all    { background:rgba(224,32,32,0.12); color:#ff7070; border:1px solid rgba(224,32,32,0.3); }
+
+    /* ══════════════ NUMBER GRID ══════════════ */
     .number-grid {
       display: grid;
       grid-template-columns: repeat(10, 1fr);
-      gap: 6px;
+      gap: 4px;
+      width: 100%;
     }
     .cell {
       aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 900;
-      font-size: clamp(13px, 2vw, 22px);
-      cursor: pointer;
-      user-select: none;
-      border: 1.5px solid rgba(255,255,255,0.1);
+      display:flex; align-items:center; justify-content:center;
+      border-radius:7px;
+      font-family:'Montserrat',sans-serif; font-weight:900;
+      font-size: clamp(11px, 3.5vw, 20px);
+      cursor:pointer; user-select:none;
+      border: 1.5px solid rgba(255,255,255,0.09);
       background: rgba(255,255,255,0.04);
       color: #fff;
-      transition: all 0.18s ease;
-      position: relative;
-      overflow: hidden;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      position:relative; overflow:hidden;
+      -webkit-tap-highlight-color: transparent;
     }
-    .cell:hover:not(.sold) {
-      border-color: rgba(255,255,255,0.3);
-      background: rgba(255,255,255,0.1);
-      transform: scale(1.06);
+    .cell:active { transform:scale(0.9); }
+    @media (min-width:780px) {
+      .cell:hover:not(.sold) {
+        border-color: rgba(255,255,255,0.28);
+        background: rgba(255,255,255,0.09);
+      }
     }
     .cell.sold {
-      background: rgba(200,20,20,0.35);
+      background: var(--red-dim);
       border-color: rgba(200,20,20,0.5);
-      color: rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.18);
     }
     .cell.sold::after {
-      content: "✕";
-      position: absolute;
-      font-size: clamp(18px, 3vw, 30px);
-      color: rgba(255,60,60,0.85);
-      font-weight: 900;
+      content:"✕";
+      position:absolute;
+      font-size: clamp(14px, 4.5vw, 26px);
+      color:rgba(255,50,50,0.85);
+      font-weight:900;
     }
-    .cell:active { transform: scale(0.95); }
 
-    /* ── DOWNLOAD PROGRESS ── */
-    .progress-msg {
-      font-size: 13px;
-      color: var(--gold);
-      text-align: center;
-      min-height: 20px;
-      font-weight: 600;
-      opacity: 0;
+    /* ══════════════ PANEL PREVIEW ══════════════ */
+    .panel-preview {
+      display:flex; flex-direction:column; gap:10px;
+      padding: 10px 12px 14px;
+      background: var(--surface);
+    }
+    @media (min-width:780px) {
+      .panel-preview {
+        padding: 20px;
+        overflow-y: auto;
+      }
+    }
+
+    .preview-label {
+      font-size:11px; font-weight:700; letter-spacing:2px;
+      text-transform:uppercase; color:var(--text-dim);
+      text-align:center;
+    }
+
+    .preview-container {
+      width:100%;
+      border-radius:12px;
+      overflow:hidden;
+      border: 1px solid var(--border);
+      background:#000;
+      position:relative;
+    }
+    .preview-container canvas {
+      width:100%;
+      height:auto;
+      display:block;
+    }
+    .preview-loading {
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(0,0,0,0.7);
+      font-size:13px; color:var(--text-dim);
       transition: opacity 0.3s;
     }
-    .progress-msg.visible { opacity: 1; }
+    .preview-loading.hidden { opacity:0; pointer-events:none; }
 
-    /* ── FOOTER ── */
-    footer {
-      margin-top: auto;
-      padding: 20px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.2);
-      text-align: center;
+    .btn-download {
+      width:100%;
+      padding:14px;
+      border:none; border-radius:12px;
+      background: linear-gradient(135deg, #e02020, #8b0e0e);
+      color:#fff;
+      font-family:'Montserrat',sans-serif; font-weight:800; font-size:15px;
+      cursor:pointer; letter-spacing:0.5px;
+      box-shadow: 0 4px 20px rgba(224,32,32,0.35);
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
     }
+    .btn-download:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(224,32,32,0.45); }
+    .btn-download:active { transform:scale(0.97); }
+    .btn-download:disabled { opacity:0.45; cursor:not-allowed; transform:none; }
+
+    /* ══════════════ STICKY BAR (mobile only) ══════════════ */
+    .sticky-bar {
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      position:fixed; bottom:0; left:0; right:0; z-index:200;
+      background: rgba(13,13,17,0.96);
+      border-top:1px solid var(--border);
+      padding:10px 14px;
+      backdrop-filter:blur(12px);
+    }
+    @media (min-width:780px) { .sticky-bar { display:none; } }
+    .sticky-info { font-size:13px; color:var(--text-dim); }
+    .sticky-info strong { color:#fff; font-size:15px; }
+    .btn-sticky-download {
+      flex-shrink:0;
+      padding:11px 22px;
+      border:none; border-radius:10px;
+      background: linear-gradient(135deg,#e02020,#8b0e0e);
+      color:#fff;
+      font-family:'Montserrat',sans-serif; font-weight:800; font-size:13px;
+      cursor:pointer;
+      box-shadow:0 3px 14px rgba(224,32,32,0.3);
+      transition: opacity 0.15s;
+    }
+    .btn-sticky-download:disabled { opacity:0.45; cursor:not-allowed; }
+
+    /* ══════════════ TOAST ══════════════ */
+    .toast {
+      position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
+      background:#222; border:1px solid rgba(255,255,255,0.12);
+      border-radius:999px; padding:9px 22px;
+      font-size:13px; font-weight:600;
+      z-index:999; white-space:nowrap;
+      opacity:0; transition:opacity 0.3s;
+      pointer-events:none;
+    }
+    @media (min-width:780px) { .toast { bottom:24px; } }
+    .toast.show { opacity:1; }
   </style>
 </head>
 <body>
 
 <header>
   <div class="logo">RIFAS <span>RODRÍGUEZ</span></div>
-  <div class="header-right">
-    <div class="counter-badge">
-      Vendidos: <strong id="soldCount">0</strong> / 100
-    </div>
+  <div class="header-info">
+    <div class="badge">Vendidos: <strong id="soldCount">0</strong>/100</div>
   </div>
 </header>
 
-<main>
-  <div class="instructions">
-    <strong>Haz clic</strong> en un número para marcarlo como vendido (X roja) · Clic de nuevo para desmarcarlo ·
-    Cuando termines, presiona <strong>⬇ Descargar Imagen</strong>
-  </div>
+<div class="app-layout">
 
-  <div class="controls">
-    <button class="btn btn-all" onclick="markAll()">Marcar todos</button>
-    <button class="btn btn-clear" onclick="clearAll()">Limpiar todo</button>
-    <button class="btn btn-download" onclick="downloadImage()" id="btnDownload">⬇ Descargar Imagen</button>
-  </div>
-
-  <div class="progress-msg" id="progressMsg">Generando imagen, espera un momento...</div>
-
-  <div class="grid-wrapper">
-    <div class="grid-title">Toca para marcar · Toca de nuevo para desmarcar</div>
+  <!-- ── GRID PANEL ── -->
+  <section class="panel-grid">
+    <div class="panel-header">
+      <span class="panel-label">Toca para marcar · Toca para desmarcar</span>
+      <div class="btn-group">
+        <button class="btn-sm btn-reset"  onclick="resetToDefault()">↺ Reset</button>
+        <button class="btn-sm btn-all"    onclick="markAll()">Marcar todos</button>
+        <button class="btn-sm btn-clear"  onclick="clearAll()">Limpiar</button>
+      </div>
+    </div>
     <div class="number-grid" id="numberGrid"></div>
-  </div>
-</main>
+  </section>
 
-<footer>Rifas Rodríguez © 2025 — Generador de Imágenes</footer>
+  <!-- ── PREVIEW PANEL ── -->
+  <section class="panel-preview">
+    <div class="preview-label">Vista previa</div>
+    <div class="preview-container" id="previewContainer">
+      <canvas id="previewCanvas"></canvas>
+      <div class="preview-loading" id="previewLoading">⏳ Cargando imagen…</div>
+    </div>
+    <!-- Download button for desktop -->
+    <button class="btn-download" id="btnDownloadDesktop" onclick="downloadImage()">⬇ Descargar PNG</button>
+  </section>
+</div>
+
+<!-- Sticky bar (mobile) -->
+<div class="sticky-bar">
+  <div class="sticky-info">Vendidos: <strong id="soldCountMobile">0</strong>/100</div>
+  <button class="btn-sticky-download" id="btnDownloadMobile" onclick="downloadImage()">⬇ Descargar</button>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <canvas id="hiddenCanvas" style="display:none"></canvas>
 
 <script>
-  // ── State ──
-  const sold = new Set();
+// ═══════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════
+const FULL_W = 1536, FULL_H = 2752;
+const STORAGE_KEY = 'rifas_sold_v1';
 
-  // ── Build grid ──
-  const grid = document.getElementById('numberGrid');
+// Default: todos marcados MENOS estos
+const FREE_NUMBERS = new Set([
+  '00','40','49','50','54','55','58',
+  '60','61','64','65','66','70','75','77',
+  '87','88','89','91','95','98','99'
+]);
+
+function buildDefaultSold() {
+  const s = new Set();
   for (let i = 0; i < 100; i++) {
-    const val = i.toString().padStart(2, '0');
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.textContent = val;
-    cell.id = 'cell-' + val;
-    cell.addEventListener('click', () => toggle(val));
-    grid.appendChild(cell);
+    const v = i.toString().padStart(2,'0');
+    if (!FREE_NUMBERS.has(v)) s.add(v);
   }
+  return s;
+}
 
-  function toggle(val) {
-    if (sold.has(val)) {
-      sold.delete(val);
-      document.getElementById('cell-' + val).classList.remove('sold');
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let sold = new Set();
+let bgImage = null;
+let previewW = 0, previewH = 0;
+
+// ═══════════════════════════════════════════
+// LOAD / SAVE
+// ═══════════════════════════════════════════
+function saveSold() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...sold]));
+}
+
+function loadSold() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr) && arr.length > 0) return new Set(arr);
+    }
+  } catch(e) {}
+  return buildDefaultSold();
+}
+
+// ═══════════════════════════════════════════
+// BUILD GRID
+// ═══════════════════════════════════════════
+const gridEl = document.getElementById('numberGrid');
+
+for (let i = 0; i < 100; i++) {
+  const val = i.toString().padStart(2,'0');
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  cell.textContent = val;
+  cell.id = 'c' + val;
+  cell.addEventListener('click', () => toggle(val));
+  gridEl.appendChild(cell);
+}
+
+function toggle(val) {
+  if (sold.has(val)) { sold.delete(val); document.getElementById('c'+val).classList.remove('sold'); }
+  else               { sold.add(val);    document.getElementById('c'+val).classList.add('sold'); }
+  updateCounters();
+  saveSold();
+  schedulePreviewUpdate();
+}
+
+function applyState() {
+  document.querySelectorAll('.cell').forEach(c => {
+    const val = c.textContent;
+    if (sold.has(val)) c.classList.add('sold');
+    else c.classList.remove('sold');
+  });
+  updateCounters();
+}
+
+function updateCounters() {
+  document.getElementById('soldCount').textContent = sold.size;
+  document.getElementById('soldCountMobile').textContent = sold.size;
+}
+
+function resetToDefault() {
+  sold = buildDefaultSold();
+  applyState();
+  saveSold();
+  schedulePreviewUpdate();
+}
+
+function markAll() {
+  for (let i = 0; i < 100; i++) sold.add(i.toString().padStart(2,'0'));
+  applyState();
+  saveSold();
+  schedulePreviewUpdate();
+}
+
+function clearAll() {
+  sold.clear();
+  applyState();
+  saveSold();
+  schedulePreviewUpdate();
+}
+
+// ═══════════════════════════════════════════
+// BACKGROUND IMAGE
+// ═══════════════════════════════════════════
+async function loadBgImage() {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => { bgImage = img; res(); };
+    img.onerror = rej;
+    img.src = 'flyer_base.jpeg';
+  });
+}
+
+// ═══════════════════════════════════════════
+// DRAW (shared for preview & full-size)
+// ═══════════════════════════════════════════
+function drawRifa(ctx, w, h, soldSet) {
+  const scale = w / FULL_W;
+
+  // 1. Background
+  if (bgImage) ctx.drawImage(bgImage, 0, 0, w, h);
+  else { ctx.fillStyle='#111'; ctx.fillRect(0,0,w,h); }
+
+  // 2. Dark overlay
+  ctx.fillStyle = 'rgba(0,0,0,0.60)';
+  ctx.fillRect(0, 720 * scale, w, (FULL_H - 720) * scale);
+
+  // 3. Grid dimensions
+  const gridLeft = (FULL_W - 1440) / 2 * scale;
+  const gridTop  = 740 * scale;
+  const gridW    = 1440 * scale;
+  const gridH    = (FULL_H - 115 - 740) * scale;
+  const cellW    = gridW / 10;
+  const cellH    = gridH / 10;
+  const fontSize = Math.round(54 * scale);
+  const xFontSz  = Math.round(95 * scale);
+
+  for (let i = 0; i < 100; i++) {
+    const val  = i.toString().padStart(2,'0');
+    const col  = i % 10;
+    const row  = Math.floor(i / 10);
+    const x    = gridLeft + col * cellW;
+    const y    = gridTop  + row * cellH;
+    const isSold = soldSet.has(val);
+
+    // Cell bg
+    ctx.fillStyle = isSold ? 'rgba(200,20,20,0.45)' : 'rgba(40,40,50,0.50)';
+    ctx.fillRect(x, y, cellW, cellH);
+
+    // Cell border
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+    ctx.lineWidth   = Math.max(1, 2.5 * scale);
+    ctx.strokeRect(x + ctx.lineWidth/2, y + ctx.lineWidth/2, cellW - ctx.lineWidth, cellH - ctx.lineWidth);
+
+    // Number
+    ctx.save();
+    ctx.font         = `900 ${fontSize}px 'Montserrat',sans-serif`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    if (isSold) {
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
     } else {
-      sold.add(val);
-      document.getElementById('cell-' + val).classList.add('sold');
+      ctx.shadowColor = 'rgba(0,0,0,1)';
+      ctx.shadowBlur  = 14 * scale;
+      ctx.fillStyle   = '#ffffff';
     }
-    document.getElementById('soldCount').textContent = sold.size;
-  }
+    ctx.fillText(val, x + cellW / 2, y + cellH / 2);
+    ctx.restore();
 
-  function markAll() {
-    for (let i = 0; i < 100; i++) {
-      const val = i.toString().padStart(2, '0');
-      sold.add(val);
-      document.getElementById('cell-' + val).classList.add('sold');
-    }
-    document.getElementById('soldCount').textContent = sold.size;
-  }
-
-  function clearAll() {
-    sold.clear();
-    document.querySelectorAll('.cell').forEach(c => c.classList.remove('sold'));
-    document.getElementById('soldCount').textContent = 0;
-  }
-
-  // ── Canvas image generation ──
-  async function downloadImage() {
-    const btn = document.getElementById('btnDownload');
-    const msg = document.getElementById('progressMsg');
-    btn.disabled = true;
-    msg.classList.add('visible');
-
-    try {
-      const CW = 1536, CH = 2752;
-      const canvas = document.getElementById('hiddenCanvas');
-      canvas.width = CW;
-      canvas.height = CH;
-      const ctx = canvas.getContext('2d');
-
-      // 1. Background image
-      const img = new Image();
-      img.src = 'flyer_base.jpeg';
-      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
-      ctx.drawImage(img, 0, 0, CW, CH);
-
-      // 2. Dark overlay below header
-      ctx.fillStyle = 'rgba(0,0,0,0.60)';
-      ctx.fillRect(0, 720, CW, CH - 720);
-
-      // 3. Grid params (matching the puppeteer render)
-      const gridLeft   = (CW - 1440) / 2;  // 48
-      const gridTop    = 740;
-      const gridWidth  = 1440;
-      const gridHeight = CH - 115 - gridTop; // 1897
-      const cols = 10, rows = 10;
-      const cellW = gridWidth  / cols;
-      const cellH = gridHeight / rows;
-
-      // Load font
-      await document.fonts.ready;
-      try {
-        const mf = new FontFace('Montserrat', "url('https://fonts.gstatic.com/s/montserrat/v29/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2')", { weight: '900' });
-        await mf.load();
-        document.fonts.add(mf);
-      } catch(e) { /* fallback */ }
-
-      for (let i = 0; i < 100; i++) {
-        const val = i.toString().padStart(2, '0');
-        const col = i % 10;
-        const row = Math.floor(i / 10);
-        const x = gridLeft + col * cellW;
-        const y = gridTop  + row * cellH;
-
-        const isSold = sold.has(val);
-
-        // Cell background
-        ctx.fillStyle = isSold
-          ? 'rgba(200,20,20,0.45)'
-          : 'rgba(40,40,50,0.50)';
-        ctx.fillRect(x, y, cellW, cellH);
-
-        // Cell border
-        ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-        ctx.lineWidth = 2.5;
-        ctx.strokeRect(x + 1.25, y + 1.25, cellW - 2.5, cellH - 2.5);
-
-        // Number text
-        ctx.save();
-        if (isSold) {
-          ctx.fillStyle = 'rgba(255,255,255,0.25)';
-        } else {
-          ctx.shadowColor = 'rgba(0,0,0,1)';
-          ctx.shadowBlur  = 14;
-          ctx.fillStyle   = '#ffffff';
-        }
-        ctx.font = "900 54px 'Montserrat', sans-serif";
-        ctx.textAlign    = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(val, x + cellW / 2, y + cellH / 2);
-        ctx.restore();
-
-        // X overlay for sold
-        if (isSold) {
-          ctx.save();
-          ctx.fillStyle    = 'rgba(255,0,0,0.85)';
-          ctx.shadowColor  = 'rgba(0,0,0,0.9)';
-          ctx.shadowBlur   = 10;
-          ctx.font         = "900 95px 'Montserrat', sans-serif";
-          ctx.textAlign    = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('X', x + cellW / 2, y + cellH / 2);
-          ctx.restore();
-        }
-      }
-
-      // 4. Download
-      canvas.toBlob(blob => {
-        const url = URL.createObjectURL(blob);
-        const a   = document.createElement('a');
-        a.href     = url;
-        a.download = 'rifas_numeros.png';
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-        msg.textContent = '✅ ¡Imagen descargada!';
-        setTimeout(() => {
-          msg.classList.remove('visible');
-          msg.textContent = 'Generando imagen, espera un momento...';
-        }, 3000);
-        btn.disabled = false;
-      }, 'image/png');
-
-    } catch (err) {
-      console.error(err);
-      msg.textContent = '❌ Error generando la imagen. Revisa la consola.';
-      btn.disabled = false;
+    // X overlay
+    if (isSold) {
+      ctx.save();
+      ctx.font         = `900 ${xFontSz}px 'Montserrat',sans-serif`;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle    = 'rgba(255,0,0,0.85)';
+      ctx.shadowColor  = 'rgba(0,0,0,0.9)';
+      ctx.shadowBlur   = 10 * scale;
+      ctx.fillText('X', x + cellW / 2, y + cellH / 2);
+      ctx.restore();
     }
   }
+}
+
+// ═══════════════════════════════════════════
+// PREVIEW
+// ═══════════════════════════════════════════
+let previewPending = false;
+
+function schedulePreviewUpdate() {
+  if (previewPending) return;
+  previewPending = true;
+  requestAnimationFrame(() => {
+    previewPending = false;
+    updatePreview();
+  });
+}
+
+function updatePreview() {
+  const canvas = document.getElementById('previewCanvas');
+  const container = document.getElementById('previewContainer');
+  const cw = container.clientWidth || 300;
+  const ch = Math.round(cw * FULL_H / FULL_W);
+
+  // Set actual pixel resolution (2x for sharpness on mobile)
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width  = cw * dpr;
+  canvas.height = ch * dpr;
+  canvas.style.width  = cw + 'px';
+  canvas.style.height = ch + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  drawRifa(ctx, cw, ch, sold);
+}
+
+// ═══════════════════════════════════════════
+// DOWNLOAD
+// ═══════════════════════════════════════════
+async function downloadImage() {
+  const btnD = document.getElementById('btnDownloadDesktop');
+  const btnM = document.getElementById('btnDownloadMobile');
+  btnD.disabled = true; btnM.disabled = true;
+  showToast('⏳ Generando imagen…');
+
+  try {
+    const canvas = document.getElementById('hiddenCanvas');
+    canvas.width  = FULL_W;
+    canvas.height = FULL_H;
+    const ctx = canvas.getContext('2d');
+    await document.fonts.ready;
+    drawRifa(ctx, FULL_W, FULL_H, sold);
+
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href     = url;
+      a.download = 'rifas_numeros.png';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 8000);
+      showToast('✅ ¡Imagen descargada!');
+      btnD.disabled = false; btnM.disabled = false;
+    }, 'image/png');
+  } catch(err) {
+    console.error(err);
+    showToast('❌ Error generando imagen');
+    btnD.disabled = false; btnM.disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+(async () => {
+  // Load saved state
+  sold = loadSold();
+  applyState();
+
+  // Load background image & render preview
+  try {
+    await loadBgImage();
+  } catch(e) {
+    console.warn('No se pudo cargar la imagen de fondo:', e);
+  }
+  document.getElementById('previewLoading').classList.add('hidden');
+  updatePreview();
+
+  // Re-render preview on resize
+  window.addEventListener('resize', () => schedulePreviewUpdate());
+})();
 </script>
 </body>
 </html>
