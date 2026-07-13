@@ -228,6 +228,52 @@
     }
     .btn-sticky-download:disabled { opacity:0.45; cursor:not-allowed; }
 
+    /* ══════════════ UPLOAD ZONE ══════════════ */
+    .upload-zone {
+      width:100%; border-radius:12px;
+      border: 2px dashed rgba(245,197,24,0.4);
+      background: rgba(245,197,24,0.04);
+      padding: 28px 16px;
+      display:flex; flex-direction:column; align-items:center; gap:10px;
+      cursor:pointer; transition: border-color 0.2s, background 0.2s;
+      text-align:center;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--gold);
+      background: rgba(245,197,24,0.08);
+    }
+    .upload-zone.hidden { display:none; }
+    .upload-icon { font-size:34px; line-height:1; }
+    .upload-title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:15px; color:var(--gold); }
+    .upload-sub { font-size:12px; color:var(--text-dim); line-height:1.5; }
+    .upload-btn-label {
+      display:inline-block;
+      padding:9px 22px; border-radius:8px;
+      background: rgba(245,197,24,0.15);
+      border: 1px solid rgba(245,197,24,0.35);
+      color: var(--gold); font-weight:700; font-size:13px;
+      cursor:pointer; transition:background 0.15s;
+    }
+    .upload-btn-label:hover { background:rgba(245,197,24,0.25); }
+
+    .flyer-loaded-bar {
+      display:flex; align-items:center; justify-content:space-between;
+      gap:8px; padding:8px 12px;
+      background:rgba(245,197,24,0.06);
+      border:1px solid rgba(245,197,24,0.18);
+      border-radius:9px; font-size:12px;
+    }
+    .flyer-loaded-bar.hidden { display:none; }
+    .flyer-loaded-bar span { color:rgba(255,255,255,0.6); }
+    .flyer-loaded-bar strong { color:var(--gold); }
+    .btn-change-flyer {
+      padding:5px 12px; border-radius:6px; border:none;
+      background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.55);
+      font-size:11px; font-weight:600; cursor:pointer;
+      transition:background 0.15s;
+    }
+    .btn-change-flyer:hover { background:rgba(255,255,255,0.12); color:#fff; }
+
     /* ══════════════ TOAST ══════════════ */
     .toast {
       position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
@@ -269,9 +315,27 @@
   <!-- ── PREVIEW PANEL ── -->
   <section class="panel-preview">
     <div class="preview-label">Vista previa</div>
+
+    <!-- Upload zone (visible cuando no hay imagen) -->
+    <div class="upload-zone" id="uploadZone"
+         onclick="document.getElementById('flyerInput').click()"
+         ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+      <div class="upload-icon">🖼️</div>
+      <div class="upload-title">Carga el flyer base</div>
+      <div class="upload-sub">Arrastra la imagen aquí<br>o toca para seleccionar</div>
+      <label class="upload-btn-label">Seleccionar imagen</label>
+    </div>
+    <input type="file" id="flyerInput" accept="image/*" style="display:none" onchange="onFlyerSelected(event)"/>
+
+    <!-- Barra cuando imagen ya está cargada -->
+    <div class="flyer-loaded-bar hidden" id="flyerLoadedBar">
+      <span>✅ <strong id="flyerName">flyer_base.jpeg</strong> cargada</span>
+      <button class="btn-change-flyer" onclick="document.getElementById('flyerInput').click()">Cambiar</button>
+    </div>
+
     <div class="preview-container" id="previewContainer">
       <canvas id="previewCanvas"></canvas>
-      <div class="preview-loading" id="previewLoading">⏳ Cargando imagen…</div>
+      <div class="preview-loading" id="previewLoading">⏳ Cargando…</div>
     </div>
     <!-- Download button for desktop -->
     <button class="btn-download" id="btnDownloadDesktop" onclick="downloadImage()">⬇ Descargar PNG</button>
@@ -293,7 +357,9 @@
 // CONSTANTS
 // ═══════════════════════════════════════════
 const FULL_W = 1536, FULL_H = 2752;
-const STORAGE_KEY = 'rifas_sold_v1';
+const STORAGE_KEY  = 'rifas_sold_v1';
+const FLYER_KEY    = 'rifas_flyer_v1';
+const FLYERNAME_KEY= 'rifas_flyername_v1';
 
 // Default: todos marcados MENOS estos
 const FREE_NUMBERS = new Set([
@@ -316,10 +382,9 @@ function buildDefaultSold() {
 // ═══════════════════════════════════════════
 let sold = new Set();
 let bgImage = null;
-let previewW = 0, previewH = 0;
 
 // ═══════════════════════════════════════════
-// LOAD / SAVE
+// LOAD / SAVE — NUMBERS
 // ═══════════════════════════════════════════
 function saveSold() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify([...sold]));
@@ -334,6 +399,73 @@ function loadSold() {
     }
   } catch(e) {}
   return buildDefaultSold();
+}
+
+// ═══════════════════════════════════════════
+// LOAD / SAVE — FLYER IMAGE
+// ═══════════════════════════════════════════
+function saveFlyerToStorage(dataUrl, name) {
+  try {
+    localStorage.setItem(FLYER_KEY, dataUrl);
+    localStorage.setItem(FLYERNAME_KEY, name || 'flyer');
+  } catch(e) {
+    showToast('⚠️ Imagen muy grande para guardar, se usará esta sesión');
+  }
+}
+
+function loadFlyerFromStorage() {
+  return {
+    dataUrl: localStorage.getItem(FLYER_KEY),
+    name:    localStorage.getItem(FLYERNAME_KEY) || 'flyer'
+  };
+}
+
+function setFlyerImage(dataUrl, name) {
+  const img = new Image();
+  img.onload = () => {
+    bgImage = img;
+    // Show loaded bar, hide upload zone
+    document.getElementById('uploadZone').classList.add('hidden');
+    document.getElementById('flyerLoadedBar').classList.remove('hidden');
+    document.getElementById('flyerName').textContent = name;
+    document.getElementById('previewLoading').classList.add('hidden');
+    schedulePreviewUpdate();
+  };
+  img.onerror = () => showToast('❌ No se pudo cargar la imagen');
+  img.src = dataUrl;
+}
+
+// File input handler
+function onFlyerSelected(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const dataUrl = ev.target.result;
+    saveFlyerToStorage(dataUrl, file.name);
+    setFlyerImage(dataUrl, file.name);
+    showToast('🖼️ Imagen cargada');
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+// Drag & drop
+function onDragOver(e) { e.preventDefault(); document.getElementById('uploadZone').classList.add('drag-over'); }
+function onDragLeave()  { document.getElementById('uploadZone').classList.remove('drag-over'); }
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const dataUrl = ev.target.result;
+    saveFlyerToStorage(dataUrl, file.name);
+    setFlyerImage(dataUrl, file.name);
+    showToast('🖼️ Imagen cargada');
+  };
+  reader.readAsDataURL(file);
 }
 
 // ═══════════════════════════════════════════
@@ -392,18 +524,6 @@ function clearAll() {
   applyState();
   saveSold();
   schedulePreviewUpdate();
-}
-
-// ═══════════════════════════════════════════
-// BACKGROUND IMAGE
-// ═══════════════════════════════════════════
-async function loadBgImage() {
-  return new Promise((res, rej) => {
-    const img = new Image();
-    img.onload = () => { bgImage = img; res(); };
-    img.onerror = rej;
-    img.src = 'flyer_base.jpeg';
-  });
 }
 
 // ═══════════════════════════════════════════
@@ -560,18 +680,36 @@ function showToast(msg) {
 // INIT
 // ═══════════════════════════════════════════
 (async () => {
-  // Load saved state
+  // Load saved numbers
   sold = loadSold();
   applyState();
 
-  // Load background image & render preview
-  try {
-    await loadBgImage();
-  } catch(e) {
-    console.warn('No se pudo cargar la imagen de fondo:', e);
+  // Try loading flyer from localStorage first
+  const saved = loadFlyerFromStorage();
+  if (saved.dataUrl) {
+    setFlyerImage(saved.dataUrl, saved.name);
+  } else {
+    // Try to fetch flyer_base.jpeg (works if served from same origin)
+    try {
+      const resp = await fetch('flyer_base.jpeg');
+      if (resp.ok) {
+        const blob = await resp.blob();
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const dataUrl = ev.target.result;
+          saveFlyerToStorage(dataUrl, 'flyer_base.jpeg');
+          setFlyerImage(dataUrl, 'flyer_base.jpeg');
+        };
+        reader.readAsDataURL(blob);
+      } else {
+        // No image found — show upload zone
+        document.getElementById('previewLoading').classList.add('hidden');
+      }
+    } catch(e) {
+      // Offline or no file — show upload zone
+      document.getElementById('previewLoading').classList.add('hidden');
+    }
   }
-  document.getElementById('previewLoading').classList.add('hidden');
-  updatePreview();
 
   // Re-render preview on resize
   window.addEventListener('resize', () => schedulePreviewUpdate());
