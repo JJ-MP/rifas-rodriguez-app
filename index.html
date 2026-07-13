@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rifas Rodríguez — Marcador de Números</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --red:    #e02020;
+      --red-d:  #9b1010;
+      --gold:   #f5c518;
+      --bg:     #0e0e12;
+      --surface:#17171f;
+      --border: rgba(255,255,255,0.08);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── HEADER ── */
+    header {
+      width: 100%;
+      background: linear-gradient(135deg, #1a0505 0%, #2d0808 60%, #1a0505 100%);
+      border-bottom: 1px solid rgba(224,32,32,0.3);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    header .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: 1px;
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(245,197,24,0.4);
+    }
+    header .logo span { color: #fff; }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .counter-badge {
+      background: rgba(224,32,32,0.15);
+      border: 1px solid rgba(224,32,32,0.4);
+      border-radius: 999px;
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ff6b6b;
+    }
+    .counter-badge strong { color: #fff; font-size: 16px; }
+
+    /* ── MAIN ── */
+    main {
+      width: 100%;
+      max-width: 1100px;
+      padding: 32px 16px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    /* ── INSTRUCTIONS ── */
+    .instructions {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 24px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      width: 100%;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .instructions strong { color: var(--gold); }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+    .btn {
+      padding: 12px 28px;
+      border-radius: 10px;
+      border: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      letter-spacing: 0.5px;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-download {
+      background: linear-gradient(135deg, #e02020, #9b1010);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(224,32,32,0.35);
+      font-size: 15px;
+      padding: 14px 36px;
+    }
+    .btn-download:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-clear {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.7);
+      border: 1px solid var(--border);
+    }
+    .btn-all {
+      background: rgba(224,32,32,0.12);
+      color: #ff6b6b;
+      border: 1px solid rgba(224,32,32,0.3);
+    }
+
+    /* ── GRID ── */
+    .grid-wrapper {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+    }
+    .grid-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    .number-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+    }
+    .cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(13px, 2vw, 22px);
+      cursor: pointer;
+      user-select: none;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: #fff;
+      transition: all 0.18s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .cell:hover:not(.sold) {
+      border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+      transform: scale(1.06);
+    }
+    .cell.sold {
+      background: rgba(200,20,20,0.35);
+      border-color: rgba(200,20,20,0.5);
+      color: rgba(255,255,255,0.2);
+    }
+    .cell.sold::after {
+      content: "✕";
+      position: absolute;
+      font-size: clamp(18px, 3vw, 30px);
+      color: rgba(255,60,60,0.85);
+      font-weight: 900;
+    }
+    .cell:active { transform: scale(0.95); }
+
+    /* ── DOWNLOAD PROGRESS ── */
+    .progress-msg {
+      font-size: 13px;
+      color: var(--gold);
+      text-align: center;
+      min-height: 20px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .progress-msg.visible { opacity: 1; }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: auto;
+      padding: 20px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">RIFAS <span>RODRÍGUEZ</span></div>
+  <div class="header-right">
+    <div class="counter-badge">
+      Vendidos: <strong id="soldCount">0</strong> / 100
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="instructions">
+    <strong>Haz clic</strong> en un número para marcarlo como vendido (X roja) · Clic de nuevo para desmarcarlo ·
+    Cuando termines, presiona <strong>⬇ Descargar Imagen</strong>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-all" onclick="markAll()">Marcar todos</button>
+    <button class="btn btn-clear" onclick="clearAll()">Limpiar todo</button>
+    <button class="btn btn-download" onclick="downloadImage()" id="btnDownload">⬇ Descargar Imagen</button>
+  </div>
+
+  <div class="progress-msg" id="progressMsg">Generando imagen, espera un momento...</div>
+
+  <div class="grid-wrapper">
+    <div class="grid-title">Toca para marcar · Toca de nuevo para desmarcar</div>
+    <div class="number-grid" id="numberGrid"></div>
+  </div>
+</main>
+
+<footer>Rifas Rodríguez © 2025 — Generador de Imágenes</footer>
+
+<canvas id="hiddenCanvas" style="display:none"></canvas>
+
+<script>
+  // ── State ──
+  const sold = new Set();
+
+  // ── Build grid ──
+  const grid = document.getElementById('numberGrid');
+  for (let i = 0; i < 100; i++) {
+    const val = i.toString().padStart(2, '0');
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.textContent = val;
+    cell.id = 'cell-' + val;
+    cell.addEventListener('click', () => toggle(val));
+    grid.appendChild(cell);
+  }
+
+  function toggle(val) {
+    if (sold.has(val)) {
+      sold.delete(val);
+      document.getElementById('cell-' + val).classList.remove('sold');
+    } else {
+      sold.add(val);
+      document.getElementById('cell-' + val).classList.add('sold');
+    }
+    document.getElementById('soldCount').textContent = sold.size;
+  }
+
+  function markAll() {
+    for (let i = 0; i < 100; i++) {
+      const val = i.toString().padStart(2, '0');
+      sold.add(val);
+      document.getElementById('cell-' + val).classList.add('sold');
+    }
+    document.getElementById('soldCount').textContent = sold.size;
+  }
+
+  function clearAll() {
+    sold.clear();
+    document.querySelectorAll('.cell').forEach(c => c.classList.remove('sold'));
+    document.getElementById('soldCount').textContent = 0;
+  }
+
+  // ── Canvas image generation ──
+  async function downloadImage() {
+    const btn = document.getElementById('btnDownload');
+    const msg = document.getElementById('progressMsg');
+    btn.disabled = true;
+    msg.classList.add('visible');
+
+    try {
+      const CW = 1536, CH = 2752;
+      const canvas = document.getElementById('hiddenCanvas');
+      canvas.width = CW;
+      canvas.height = CH;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Background image
+      const img = new Image();
+      img.src = 'flyer_base.jpeg';
+      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+      ctx.drawImage(img, 0, 0, CW, CH);
+
+      // 2. Dark overlay below header
+      ctx.fillStyle = 'rgba(0,0,0,0.60)';
+      ctx.fillRect(0, 720, CW, CH - 720);
+
+      // 3. Grid params (matching the puppeteer render)
+      const gridLeft   = (CW - 1440) / 2;  // 48
+      const gridTop    = 740;
+      const gridWidth  = 1440;
+      const gridHeight = CH - 115 - gridTop; // 1897
+      const cols = 10, rows = 10;
+      const cellW = gridWidth  / cols;
+      const cellH = gridHeight / rows;
+
+      // Load font
+      await document.fonts.ready;
+      try {
+        const mf = new FontFace('Montserrat', "url('https://fonts.gstatic.com/s/montserrat/v29/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2')", { weight: '900' });
+        await mf.load();
+        document.fonts.add(mf);
+      } catch(e) { /* fallback */ }
+
+      for (let i = 0; i < 100; i++) {
+        const val = i.toString().padStart(2, '0');
+        const col = i % 10;
+        const row = Math.floor(i / 10);
+        const x = gridLeft + col * cellW;
+        const y = gridTop  + row * cellH;
+
+        const isSold = sold.has(val);
+
+        // Cell background
+        ctx.fillStyle = isSold
+          ? 'rgba(200,20,20,0.45)'
+          : 'rgba(40,40,50,0.50)';
+        ctx.fillRect(x, y, cellW, cellH);
+
+        // Cell border
+        ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(x + 1.25, y + 1.25, cellW - 2.5, cellH - 2.5);
+
+        // Number text
+        ctx.save();
+        if (isSold) {
+          ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        } else {
+          ctx.shadowColor = 'rgba(0,0,0,1)';
+          ctx.shadowBlur  = 14;
+          ctx.fillStyle   = '#ffffff';
+        }
+        ctx.font = "900 54px 'Montserrat', sans-serif";
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(val, x + cellW / 2, y + cellH / 2);
+        ctx.restore();
+
+        // X overlay for sold
+        if (isSold) {
+          ctx.save();
+          ctx.fillStyle    = 'rgba(255,0,0,0.85)';
+          ctx.shadowColor  = 'rgba(0,0,0,0.9)';
+          ctx.shadowBlur   = 10;
+          ctx.font         = "900 95px 'Montserrat', sans-serif";
+          ctx.textAlign    = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('X', x + cellW / 2, y + cellH / 2);
+          ctx.restore();
+        }
+      }
+
+      // 4. Download
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a   = document.createElement('a');
+        a.href     = url;
+        a.download = 'rifas_numeros.png';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        msg.textContent = '✅ ¡Imagen descargada!';
+        setTimeout(() => {
+          msg.classList.remove('visible');
+          msg.textContent = 'Generando imagen, espera un momento...';
+        }, 3000);
+        btn.disabled = false;
+      }, 'image/png');
+
+    } catch (err) {
+      console.error(err);
+      msg.textContent = '❌ Error generando la imagen. Revisa la consola.';
+      btn.disabled = false;
+    }
+  }
+</script>
+</body>
+</html>
