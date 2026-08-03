@@ -35,15 +35,13 @@
 
     /* ══ LAYOUT ══ */
     .app-layout {
-      width:100%; max-width:500px; margin:0 auto; padding:12px;
+      width:100%; max-width:520px; margin:0 auto; padding:12px;
       display:flex; flex-direction:column; gap:16px;
-      padding-bottom: 80px; /* espacio para botones flotantes */
+      padding-bottom: 90px;
     }
 
-    /* ══ LEFT — GRID PANEL ══ */
-    .panel-grid { padding:12px; display:flex; flex-direction:column; gap:10px; overflow-y:auto; }
-    @media (min-width:780px) { .panel-grid { padding:16px; border-right:1px solid var(--border); } }
-
+    /* ══ GRID PANEL ══ */
+    .panel-grid { display:flex; flex-direction:column; gap:10px; }
     .row-btns { display:flex; gap:6px; flex-wrap:wrap; }
     .btn-sm {
       padding:6px 13px; border-radius:8px; border:none;
@@ -67,37 +65,63 @@
     .cell.sold { background:var(--red-dim); border-color:rgba(200,20,20,0.5); color:rgba(255,255,255,0.18); }
     .cell.sold::after { content:"✕"; position:absolute; font-size:clamp(13px,4.5vw,26px); color:rgba(255,50,50,0.85); font-weight:900; }
 
-    /* ══ ADJUST PANEL ══ */
+    /* ══ ADJUST PANEL — NUEVO DISEÑO INTUITIVO ══ */
     .adjust-panel {
-      background:var(--surface2); border:1px solid var(--border); border-radius:12px; overflow:hidden;
+      background:var(--surface2); border:1px solid var(--border); border-radius:14px; overflow:hidden;
     }
     .adjust-toggle {
-      width:100%; padding:11px 14px; display:flex; align-items:center; justify-content:space-between;
+      width:100%; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;
       background:none; border:none; color:#fff; font-family:'Inter',sans-serif; font-weight:600; font-size:13px;
       cursor:pointer; gap:8px;
     }
-    .adjust-toggle span:last-child { font-size:11px; color:var(--text-dim); transition:transform 0.2s; }
-    .adjust-toggle.open span:last-child { transform:rotate(180deg); }
-    .adjust-body { display:none; padding:4px 14px 14px; flex-direction:column; gap:12px; }
+    .adjust-toggle .arrow { font-size:11px; color:var(--text-dim); transition:transform 0.2s; }
+    .adjust-toggle.open .arrow { transform:rotate(180deg); }
+    .adjust-body { display:none; padding:8px 14px 16px; flex-direction:column; gap:14px; }
     .adjust-body.open { display:flex; }
 
-    .slider-row { display:flex; flex-direction:column; gap:4px; }
+    /* Sección dentro del panel */
+    .adj-section-label {
+      font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+      color:var(--text-dim); padding-bottom:6px; border-bottom:1px solid var(--border);
+    }
+    .adj-section { display:flex; flex-direction:column; gap:8px; }
+
+    /* Controles con botones direccionales */
+    .ctrl-row {
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+    }
+    .ctrl-label { font-size:12px; color:rgba(255,255,255,0.7); flex:1; }
+    .ctrl-btns { display:flex; gap:5px; }
+    .ctrl-btn {
+      width:36px; height:36px; border-radius:9px; border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.05); color:#fff; font-size:16px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background 0.12s, transform 0.1s;
+      -webkit-tap-highlight-color:transparent; user-select:none;
+    }
+    .ctrl-btn:active { background:rgba(245,197,24,0.18); transform:scale(0.9); }
+    .ctrl-btn.wide { width:auto; padding:0 12px; font-size:12px; font-weight:600; }
+
+    /* Slider de opacidad (el único que queda como slider porque es continuo) */
+    .slider-row { display:flex; flex-direction:column; gap:6px; }
     .slider-label { display:flex; justify-content:space-between; font-size:12px; color:var(--text-dim); }
-    .slider-label strong { color:#fff; font-size:12px; }
+    .slider-label strong { color:#fff; }
     input[type=range] {
       width:100%; height:4px; border-radius:4px; appearance:none;
       background:linear-gradient(to right, var(--gold) 0%, var(--gold) var(--pct,50%), rgba(255,255,255,0.15) var(--pct,50%));
       cursor:pointer; outline:none;
     }
-    input[type=range]::-webkit-slider-thumb { appearance:none; width:16px; height:16px; border-radius:50%; background:var(--gold); box-shadow:0 0 6px rgba(245,197,24,0.5); }
-    input[type=range]::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--gold); border:none; }
-    .btn-reset-pos { align-self:flex-start; padding:5px 12px; border-radius:7px; border:none; background:rgba(255,255,255,0.06); color:var(--text-dim); font-size:11px; font-weight:600; cursor:pointer; }
+    input[type=range]::-webkit-slider-thumb { appearance:none; width:18px; height:18px; border-radius:50%; background:var(--gold); box-shadow:0 0 6px rgba(245,197,24,0.5); }
+    input[type=range]::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:var(--gold); border:none; }
+
+    .btn-reset-pos {
+      align-self:flex-start; padding:6px 14px; border-radius:8px; border:none;
+      background:rgba(255,255,255,0.06); color:var(--text-dim); font-size:11px; font-weight:600; cursor:pointer;
+    }
     .btn-reset-pos:hover { color:#fff; }
 
-    /* ══ RIGHT — PREVIEW PANEL ══ */
-    .panel-preview { display:flex; flex-direction:column; gap:10px; padding:10px 12px 14px; background:var(--surface); }
-    @media (min-width:780px) { .panel-preview { padding:16px; overflow-y:auto; } }
-
+    /* ══ PREVIEW PANEL ══ */
+    .panel-preview { display:flex; flex-direction:column; gap:10px; padding:10px 0; }
     .sec-label { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); text-align:center; }
 
     /* Upload zone */
@@ -138,17 +162,35 @@
     .btn-download:active { transform:scale(0.97); }
     .btn-download:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
 
-    /* Sticky bar mobile */
-    .sticky-bar { display:flex; align-items:center; justify-content:space-between; gap:10px; position:fixed; bottom:0; left:0; right:0; z-index:200; background:rgba(13,13,17,0.97); border-top:1px solid var(--border); padding:9px 13px; backdrop-filter:blur(12px); }
-    @media (min-width:780px) { .sticky-bar { display:none; } }
-    .sticky-info { font-size:13px; color:var(--text-dim); }
+    /* Sticky bar */
+    .sticky-bar {
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      position:fixed; bottom:0; left:0; right:0; z-index:200;
+      background:rgba(13,13,17,0.97); border-top:1px solid var(--border);
+      padding:9px 13px; backdrop-filter:blur(12px);
+    }
+    .sticky-info { font-size:13px; color:var(--text-dim); white-space:nowrap; }
     .sticky-info strong { color:#fff; font-size:14px; }
-    .btn-sticky { flex-shrink:0; padding:10px 20px; border:none; border-radius:9px; background:linear-gradient(135deg,#e02020,#8b0e0e); color:#fff; font-family:'Montserrat',sans-serif; font-weight:800; font-size:13px; cursor:pointer; }
+    .btn-sticky {
+      flex-shrink:0; padding:10px 16px; border:none; border-radius:9px;
+      background:linear-gradient(135deg,#e02020,#8b0e0e); color:#fff;
+      font-family:'Montserrat',sans-serif; font-weight:800; font-size:12px; cursor:pointer;
+    }
+    .btn-sticky.secondary { background:#2a2a3a; border:1px solid var(--border); }
     .btn-sticky:disabled { opacity:0.4; }
+
+    /* Sync indicator */
+    .sync-dot {
+      width:8px; height:8px; border-radius:50%; background:#888;
+      display:inline-block; margin-left:6px; transition:background 0.3s;
+    }
+    .sync-dot.syncing { background:var(--gold); animation:pulse 1s infinite; }
+    .sync-dot.ok      { background:#4caf50; }
+    .sync-dot.error   { background:#f44336; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
     /* Toast */
     .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#1e1e2a; border:1px solid rgba(255,255,255,0.12); border-radius:999px; padding:8px 20px; font-size:13px; font-weight:600; z-index:999; white-space:nowrap; opacity:0; transition:opacity 0.3s; pointer-events:none; }
-    @media (min-width:780px) { .toast { bottom:20px; } }
     .toast.show { opacity:1; }
   </style>
 </head>
@@ -156,63 +198,34 @@
 
 <header>
   <div class="logo">RIFAS <span>RODRÍGUEZ</span></div>
-  <div class="badge">Vendidos: <strong id="soldCount">0</strong>/100</div>
+  <div class="badge">
+    Vendidos: <strong id="soldCount">0</strong>/100
+    <span class="sync-dot" id="syncDot" title="Estado de sincronización"></span>
+  </div>
 </header>
 
 <div class="app-layout">
 
-  <!-- ══ LEFT: GRID + ADJUST ══ -->
+  <!-- ══ GRID ══ -->
   <section class="panel-grid">
     <div class="row-btns">
       <button class="btn-sm btn-reset" onclick="resetToDefault()">↺ Reset</button>
       <button class="btn-sm btn-all"   onclick="markAll()">Marcar todos</button>
       <button class="btn-sm btn-clear" onclick="clearAll()">Limpiar</button>
     </div>
-
     <div class="number-grid" id="numberGrid"></div>
-
-    <!-- Ajustar posición de tabla -->
-    <div class="adjust-panel">
-      <button class="adjust-toggle" id="adjustToggle" onclick="toggleAdjust()">
-        <span>⚙️ Ajustar posición de la tabla</span>
-        <span>▼</span>
-      </button>
-      <div class="adjust-body" id="adjustBody">
-        <div class="slider-row">
-          <div class="slider-label"><span>Sombra oscura — opacidad</span><strong id="valOpacity">60%</strong></div>
-          <input type="range" id="slOpacity" min="0" max="100" step="1" value="60" oninput="onSlider()">
-        </div>
-        <div class="slider-row">
-          <div class="slider-label"><span>Tabla — posición arriba/abajo</span><strong id="valGridY">26.9%</strong></div>
-          <input type="range" id="slGridY" min="0" max="95" step="0.1" value="26.9" oninput="onSlider()">
-        </div>
-        <div class="slider-row">
-          <div class="slider-label"><span>Sombra oscura — empieza en</span><strong id="valOverlayY">26.1%</strong></div>
-          <input type="range" id="slOverlayY" min="0" max="95" step="0.1" value="26.1" oninput="onSlider()">
-        </div>
-        <div class="slider-row">
-          <div class="slider-label"><span>Tabla — margen izq/der</span><strong id="valMarginX">3.1%</strong></div>
-          <input type="range" id="slMarginX" min="0" max="30" step="0.1" value="3.1" oninput="onSlider()">
-        </div>
-        <div class="slider-row">
-          <div class="slider-label"><span>Tabla — margen inferior</span><strong id="valMarginB">4.2%</strong></div>
-          <input type="range" id="slMarginB" min="0" max="30" step="0.1" value="4.2" oninput="onSlider()">
-        </div>
-        <button class="btn-reset-pos" onclick="resetPosition()">↺ Posición por defecto</button>
-      </div>
-    </div>
   </section>
 
-  <!-- ══ RIGHT: PREVIEW + DOWNLOAD ══ -->
+  <!-- ══ PREVIEW + DOWNLOAD ══ -->
   <section class="panel-preview">
-    <div class="sec-label">Vista previa</div>
+    <div class="sec-label">Vista previa del flyer</div>
 
     <div class="upload-zone" id="uploadZone"
          onclick="document.getElementById('flyerInput').click()"
          ondragover="onDragOver(event)" ondragleave="onDragLeave()" ondrop="onDrop(event)">
       <div class="upload-icon">🖼️</div>
       <div class="upload-title">Carga tu flyer</div>
-      <div class="upload-sub">Arrastra la imagen aquí o toca para seleccionar<br><em style="font-size:10px;opacity:.6">(se guarda automáticamente)</em></div>
+      <div class="upload-sub">Arrastra la imagen aquí o toca para seleccionar<br><em style="font-size:10px;opacity:.6">(se guarda en la nube automáticamente)</em></div>
       <div class="upload-cta">Seleccionar imagen</div>
     </div>
     <input type="file" id="flyerInput" accept="image/*" style="display:none" onchange="onFlyerSelected(event)"/>
@@ -227,6 +240,62 @@
       <div class="preview-overlay" id="previewOverlay">⏳ Cargando…</div>
     </div>
 
+    <!-- ══ AJUSTAR POSICIÓN — CONTROLES INTUITIVOS ══ -->
+    <div class="adjust-panel">
+      <button class="adjust-toggle" id="adjustToggle" onclick="toggleAdjust()">
+        <span>⚙️ Ajustar posición de la tabla</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="adjust-body" id="adjustBody">
+
+        <div class="adj-section">
+          <div class="adj-section-label">Mover tabla</div>
+          <div class="ctrl-row">
+            <span class="ctrl-label">Arriba / Abajo</span>
+            <div class="ctrl-btns">
+              <button class="ctrl-btn" onclick="nudge('gridY',-1)" title="Subir tabla">▲</button>
+              <button class="ctrl-btn" onclick="nudge('gridY',1)"  title="Bajar tabla">▼</button>
+            </div>
+          </div>
+          <div class="ctrl-row">
+            <span class="ctrl-label">Izquierda / Derecha</span>
+            <div class="ctrl-btns">
+              <button class="ctrl-btn" onclick="nudge('marginX',1)"  title="Más margen izq/der (comprimir)">◀</button>
+              <button class="ctrl-btn" onclick="nudge('marginX',-1)" title="Menos margen (expandir)">▶</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="adj-section">
+          <div class="adj-section-label">Tamaño de la tabla</div>
+          <div class="ctrl-row">
+            <span class="ctrl-label">Estirar / Encoger</span>
+            <div class="ctrl-btns">
+              <button class="ctrl-btn wide" onclick="nudge('marginB',-1)">+ Grande</button>
+              <button class="ctrl-btn wide" onclick="nudge('marginB',1)" >- Chica</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="adj-section">
+          <div class="adj-section-label">Sombra oscura</div>
+          <div class="ctrl-row">
+            <span class="ctrl-label">Dónde empieza</span>
+            <div class="ctrl-btns">
+              <button class="ctrl-btn" onclick="nudge('overlayY',-1)" title="Subir sombra">▲</button>
+              <button class="ctrl-btn" onclick="nudge('overlayY',1)"  title="Bajar sombra">▼</button>
+            </div>
+          </div>
+          <div class="slider-row">
+            <div class="slider-label"><span>Opacidad</span><strong id="valOpacity">60%</strong></div>
+            <input type="range" id="slOpacity" min="0" max="100" step="1" value="60" oninput="onOpacitySlider()">
+          </div>
+        </div>
+
+        <button class="btn-reset-pos" onclick="resetPosition()">↺ Posición por defecto</button>
+      </div>
+    </div>
+
     <button class="btn-download" id="btnDL" onclick="downloadImage()">⬇ Descargar PNG</button>
   </section>
 </div>
@@ -234,7 +303,7 @@
 <!-- Mobile sticky bar -->
 <div class="sticky-bar">
   <div class="sticky-info">Vendidos: <strong id="soldCountM">0</strong>/100</div>
-  <button class="btn-sticky" style="background:#555" onclick="toggleAdjust(); window.scrollTo({top:0, behavior:'smooth'});">⚙️ Posición</button>
+  <button class="btn-sticky secondary" onclick="toggleAdjust(); document.querySelector('.adjust-panel').scrollIntoView({behavior:'smooth'});">⚙️ Posición</button>
   <button class="btn-sticky" id="btnDLM" onclick="downloadImage()">⬇ Descargar</button>
 </div>
 
@@ -243,25 +312,29 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ══════════════════════════════════════
-// CONSTANTS & DEFAULTS
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+// SUPABASE CLIENT — GLOBAL (accesible por todas las funciones)
+// ══════════════════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://zwbhsukrpbcxqypnnbzp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3YmhzdWtycGJjeHF5cG5uYnpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyOTMzOTEsImV4cCI6MjA5OTg2OTM5MX0.FN4JGYlf-1AZj3tNNCw9HYYUE2KKzBRSHKqqMERgQfc';
+let db = null; // Se inicializa cuando el SDK carga
+
+// ══════════════════════════════════════════════════════════════════
+// CONSTANTES Y ESTADO
+// ══════════════════════════════════════════════════════════════════
 const FULL_W = 1536, FULL_H = 2752;
 const FREE_NUMBERS = new Set(['00','40','49','50','54','55','58','60','61','64','65','66','70','75','77','87','88','89','91','95','98','99']);
-
 const DEFAULT_POS = { overlayY:26.1, gridY:26.9, marginX:3.1, marginB:4.2, opacity:60 };
 
-// ══════════════════════════════════════
-// STATE
-// ══════════════════════════════════════
-let sold   = new Set();
+let sold    = new Set();
 let bgImage = null;
-let pos = { ...DEFAULT_POS };
+let pos     = { ...DEFAULT_POS };
+let rifaId  = null; // ID de la rifa activa, cacheado
 
-// ══════════════════════════════════════
-// INDEXEDDB — IMAGE STORAGE
-// ══════════════════════════════════════
-function openDB() {
+// ══════════════════════════════════════════════════════════════════
+// INDEXEDDB — imagen local
+// ══════════════════════════════════════════════════════════════════
+function openIDB() {
   return new Promise((res, rej) => {
     const req = indexedDB.open('rifasDB', 1);
     req.onupgradeneeded = e => e.target.result.createObjectStore('files');
@@ -269,85 +342,174 @@ function openDB() {
     req.onerror    = e => rej(e);
   });
 }
-async function dbPut(key, value) {
-  const db = await openDB();
+async function idbPut(key, value) {
+  const idb = await openIDB();
   return new Promise((res, rej) => {
-    const tx = db.transaction('files','readwrite');
+    const tx = idb.transaction('files','readwrite');
     tx.objectStore('files').put(value, key);
     tx.oncomplete = res; tx.onerror = rej;
   });
 }
-async function dbGet(key) {
-  const db = await openDB();
+async function idbGet(key) {
+  const idb = await openIDB();
   return new Promise((res, rej) => {
-    const tx = db.transaction('files','readonly');
+    const tx = idb.transaction('files','readonly');
     const req = tx.objectStore('files').get(key);
     req.onsuccess = e => res(e.target.result);
     req.onerror   = rej;
   });
 }
 
-// ══════════════════════════════════════
-// SOLD NUMBERS — localStorage
-// ══════════════════════════════════════
-function saveSold() { localStorage.setItem('rifas_sold', JSON.stringify([...sold])); }
-function loadSold() {
-  try {
-    const r = localStorage.getItem('rifas_sold');
-    if (r) { const a = JSON.parse(r); if (a.length) return new Set(a); }
-  } catch(e) {}
-  return buildDefault();
+// ══════════════════════════════════════════════════════════════════
+// HELPERS SUPABASE
+// ══════════════════════════════════════════════════════════════════
+function setSyncStatus(status) { // 'syncing' | 'ok' | 'error' | ''
+  const dot = document.getElementById('syncDot');
+  dot.className = 'sync-dot' + (status ? ' ' + status : '');
 }
+
+async function getRifaId() {
+  if (rifaId) return rifaId;
+  if (!db) return null;
+  const { data } = await db.from('rifas').select('id').eq('estado','activa').maybeSingle();
+  rifaId = data?.id || null;
+  return rifaId;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SOLD NUMBERS
+// ══════════════════════════════════════════════════════════════════
+function saveSoldLocal() { localStorage.setItem('rifas_sold', JSON.stringify([...sold])); }
 function buildDefault() {
   const s = new Set();
   for (let i=0;i<100;i++) { const v=i.toString().padStart(2,'0'); if (!FREE_NUMBERS.has(v)) s.add(v); }
   return s;
 }
 
-// ══════════════════════════════════════
-// POSITION — localStorage
-// ══════════════════════════════════════
-function savePosLocal() { localStorage.setItem('rifas_pos', JSON.stringify(pos)); }
-
-// Sincronizar posición en la nube (Storage)
-let syncTimer = null;
-async function savePos() {
-  savePosLocal();
-  if (!window.supabase) return;
-  // Debounce para no saturar Supabase mientras arrastran
-  clearTimeout(syncTimer);
-  syncTimer = setTimeout(async () => {
-    try {
-      const { data: rifa } = await supabase.from('rifas').select('id').eq('estado', 'activa').maybeSingle();
-      if (!rifa) return;
-      const fileName = `config_${rifa.id}.json`;
-      const blob = new Blob([JSON.stringify(pos)], { type: 'application/json' });
-      await supabase.storage.from('flyers').upload(fileName, blob, { upsert: true, contentType: 'application/json' });
-    } catch (e) {
-      console.log('Error subiendo config', e);
+async function syncNumberToSupabase(val, isSold) {
+  if (!db) return;
+  const id = await getRifaId();
+  if (!id) return;
+  setSyncStatus('syncing');
+  try {
+    if (isSold) {
+      const { data: rifaInfo } = await db.from('rifas').select('precioNumero').eq('id', id).maybeSingle();
+      await db.from('numeros').upsert({
+        rifaId: id, numero: val, estado: 'reservado',
+        precioPagado: rifaInfo?.precioNumero || '0', montoAbonado: '0'
+      }, { onConflict: 'rifa_id,numero' });
+    } else {
+      await db.from('numeros').update({ estado: 'disponible' }).eq('rifaId', id).eq('numero', val);
     }
-  }, 1000);
+    setSyncStatus('ok');
+  } catch(e) {
+    console.error('syncNumber error:', e);
+    setSyncStatus('error');
+  }
 }
 
+async function syncAllToSupabase() {
+  if (!db) return;
+  const id = await getRifaId();
+  if (!id) return;
+  setSyncStatus('syncing');
+  try {
+    // Liberar todos primero
+    await db.from('numeros').update({ estado: 'disponible' }).eq('rifaId', id);
+    // Reservar los marcados
+    const soldArr = [...sold];
+    if (soldArr.length > 0) {
+      const { data: rifaInfo } = await db.from('rifas').select('precioNumero').eq('id', id).maybeSingle();
+      await db.from('numeros').upsert(
+        soldArr.map(n => ({
+          rifaId: id, numero: n, estado: 'reservado',
+          precioPagado: rifaInfo?.precioNumero || '0', montoAbonado: '0'
+        })),
+        { onConflict: 'rifa_id,numero' }
+      );
+    }
+    setSyncStatus('ok');
+    showToast('🔄 Sincronizado en la nube');
+  } catch(e) {
+    console.error('syncAll error:', e);
+    setSyncStatus('error');
+    showToast('⚠️ Error al sincronizar');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// POSICIÓN
+// ══════════════════════════════════════════════════════════════════
+function savePosLocal() { localStorage.setItem('rifas_pos', JSON.stringify(pos)); }
 function loadPosLocal() {
   try { const r=localStorage.getItem('rifas_pos'); if(r) return {...DEFAULT_POS,...JSON.parse(r)}; } catch(e) {}
   return {...DEFAULT_POS};
 }
 
-// ══════════════════════════════════════
-// FLYER IMAGE
-// ══════════════════════════════════════
-async function saveFlyerToDB(blob, name) {
-  await dbPut('flyer',      blob);
-  await dbPut('flyerName',  name);
+let posSyncTimer = null;
+async function savePos() {
+  savePosLocal();
+  if (!db) return;
+  clearTimeout(posSyncTimer);
+  posSyncTimer = setTimeout(async () => {
+    try {
+      const id = await getRifaId();
+      if (!id) return;
+      const fileName = `config_${id}.json`;
+      const blob = new Blob([JSON.stringify(pos)], { type: 'application/json' });
+      await db.storage.from('flyers').upload(fileName, blob, { upsert: true, contentType: 'application/json' });
+    } catch(e) { /* silencioso */ }
+  }, 1200);
 }
 
-async function loadFlyerFromDB() {
-  const blob = await dbGet('flyer');
-  const name = await dbGet('flyerName');
-  return { blob, name };
+// ══════════════════════════════════════════════════════════════════
+// CONTROLES DE POSICIÓN — nudge (botones intuitivos)
+// ══════════════════════════════════════════════════════════════════
+const NUDGE_STEP = { gridY:0.8, overlayY:0.8, marginX:0.3, marginB:0.5 };
+const NUDGE_MIN  = { gridY:0, overlayY:0, marginX:0, marginB:0 };
+const NUDGE_MAX  = { gridY:95, overlayY:95, marginX:25, marginB:30 };
+
+function nudge(key, dir) {
+  pos[key] = Math.max(NUDGE_MIN[key], Math.min(NUDGE_MAX[key], pos[key] + dir * NUDGE_STEP[key]));
+  syncUIFromPos();
+  schedulePreview();
+  savePos();
 }
 
+function onOpacitySlider() {
+  const el = document.getElementById('slOpacity');
+  pos.opacity = parseFloat(el.value);
+  const pct = ((pos.opacity) / 100 * 100);
+  el.style.setProperty('--pct', pct + '%');
+  document.getElementById('valOpacity').textContent = pos.opacity.toFixed(0) + '%';
+  schedulePreview();
+  savePos();
+}
+
+function syncUIFromPos() {
+  const sl = document.getElementById('slOpacity');
+  if (sl) {
+    sl.value = pos.opacity ?? 60;
+    sl.style.setProperty('--pct', (pos.opacity ?? 60) + '%');
+    document.getElementById('valOpacity').textContent = (pos.opacity ?? 60).toFixed(0) + '%';
+  }
+}
+
+function resetPosition() {
+  pos = {...DEFAULT_POS};
+  syncUIFromPos();
+  schedulePreview();
+  savePos();
+}
+
+function toggleAdjust() {
+  document.getElementById('adjustToggle').classList.toggle('open');
+  document.getElementById('adjustBody').classList.toggle('open');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FLYER
+// ══════════════════════════════════════════════════════════════════
 function setFlyerFromBlob(blob, name) {
   const url = URL.createObjectURL(blob);
   const img = new Image();
@@ -360,24 +522,41 @@ function setFlyerFromBlob(blob, name) {
     document.getElementById('previewOverlay').classList.add('hidden');
     schedulePreview();
   };
-  img.onerror = () => { URL.revokeObjectURL(url); showToast('❌ Error cargando imagen'); };
+  img.onerror = () => { URL.revokeObjectURL(url); };
   img.src = url;
+}
+
+async function uploadFlyerToSupabase(file) {
+  if (!db) return null;
+  try {
+    setSyncStatus('syncing');
+    const fileName = `flyer_principal.jpeg`;
+    const { error } = await db.storage.from('flyers').upload(fileName, file, { upsert: true, contentType: file.type });
+    if (error) throw error;
+    const { data: pub } = db.storage.from('flyers').getPublicUrl(fileName);
+    const id = await getRifaId();
+    if (id) {
+      await db.from('rifas').update({ imagenUrl: pub.publicUrl }).eq('id', id);
+    }
+    setSyncStatus('ok');
+    return pub.publicUrl;
+  } catch(e) {
+    console.error('uploadFlyer error:', e);
+    setSyncStatus('error');
+    return null;
+  }
 }
 
 async function onFlyerSelected(e) {
   const file = e.target.files[0]; if (!file) return;
   document.getElementById('previewOverlay').classList.remove('hidden');
-  document.getElementById('previewOverlay').textContent = 'Subiendo flyer a la base de datos...';
-  
-  // Guardar local
-  await saveFlyerToDB(file, file.name).catch(()=>{});
-  
-  // Subir a la nube
-  const publicUrl = await uploadFlyerToSupabase(file);
-  
+  document.getElementById('previewOverlay').textContent = 'Subiendo flyer…';
+  await idbPut('flyer', file).catch(()=>{});
+  await idbPut('flyerName', file.name).catch(()=>{});
+  const url = await uploadFlyerToSupabase(file);
   setFlyerFromBlob(file, file.name);
-  showToast(publicUrl ? '🖼️ Imagen subida a la nube' : '🖼️ Imagen guardada local (modo offline)');
-  e.target.value='';
+  showToast(url ? '🖼️ Flyer subido a la nube ✅' : '🖼️ Guardado solo local (sin conexión)');
+  e.target.value = '';
 }
 
 function onDragOver(e)  { e.preventDefault(); document.getElementById('uploadZone').classList.add('drag-over'); }
@@ -385,37 +564,54 @@ function onDragLeave()  { document.getElementById('uploadZone').classList.remove
 async function onDrop(e) {
   e.preventDefault(); document.getElementById('uploadZone').classList.remove('drag-over');
   const file = e.dataTransfer.files[0];
-  if (!file||!file.type.startsWith('image/')) return;
-  
+  if (!file || !file.type.startsWith('image/')) return;
   document.getElementById('previewOverlay').classList.remove('hidden');
-  document.getElementById('previewOverlay').textContent = 'Subiendo flyer a la base de datos...';
-  
-  await saveFlyerToDB(file, file.name).catch(()=>{});
-  const publicUrl = await uploadFlyerToSupabase(file);
-  
+  document.getElementById('previewOverlay').textContent = 'Subiendo flyer…';
+  await idbPut('flyer', file).catch(()=>{});
+  await idbPut('flyerName', file.name).catch(()=>{});
+  const url = await uploadFlyerToSupabase(file);
   setFlyerFromBlob(file, file.name);
-  showToast(publicUrl ? '🖼️ Imagen subida a la nube' : '🖼️ Imagen guardada local (modo offline)');
+  showToast(url ? '🖼️ Flyer subido a la nube ✅' : '🖼️ Guardado solo local (sin conexión)');
 }
 
-// ══════════════════════════════════════
+async function loadFlyerFromLocal() {
+  try {
+    const blob = await idbGet('flyer');
+    const name = await idbGet('flyerName');
+    if (blob) setFlyerFromBlob(blob, name || 'flyer_base.jpeg');
+    else {
+      const resp = await fetch('flyer_base.jpeg');
+      if (resp.ok) {
+        const b = await resp.blob();
+        setFlyerFromBlob(b, 'flyer_base.jpeg');
+      } else {
+        document.getElementById('previewOverlay').classList.add('hidden');
+      }
+    }
+  } catch(e) {
+    document.getElementById('previewOverlay').classList.add('hidden');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
 // GRID CELLS
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
 const gridEl = document.getElementById('numberGrid');
 for (let i=0;i<100;i++) {
   const val = i.toString().padStart(2,'0');
   const cell = document.createElement('div');
   cell.className='cell'; cell.textContent=val; cell.id='c'+val;
-  cell.addEventListener('click',()=>toggle(val));
+  cell.addEventListener('click', () => toggle(val));
   gridEl.appendChild(cell);
 }
 
 function toggle(val) {
   const isSold = !sold.has(val);
-  if (sold.has(val)) { sold.delete(val); document.getElementById('c'+val).classList.remove('sold'); }
-  else               { sold.add(val);    document.getElementById('c'+val).classList.add('sold'); }
-  updateCounters(); saveSold(); schedulePreview();
-  
-  // Sincronizar en background
+  if (isSold) { sold.add(val);    document.getElementById('c'+val).classList.add('sold'); }
+  else        { sold.delete(val); document.getElementById('c'+val).classList.remove('sold'); }
+  updateCounters();
+  saveSoldLocal();
+  schedulePreview();
   syncNumberToSupabase(val, isSold);
 }
 
@@ -431,122 +627,26 @@ function updateCounters() {
   document.getElementById('soldCountM').textContent = sold.size;
 }
 
-function resetToDefault() { 
-  sold=buildDefault(); 
-  applyState(); 
-  saveSold(); 
-  schedulePreview();
-  syncAllToSupabase();
-}
-function markAll() { 
-  for(let i=0;i<100;i++) sold.add(i.toString().padStart(2,'0')); 
-  applyState(); 
-  saveSold(); 
-  schedulePreview();
-  syncAllToSupabase();
-}
-function clearAll() { 
-  sold.clear(); 
-  applyState(); 
-  saveSold(); 
-  schedulePreview();
-  syncAllToSupabase();
-}
+function resetToDefault() { sold=buildDefault(); applyState(); saveSoldLocal(); schedulePreview(); syncAllToSupabase(); }
+function markAll()        { for(let i=0;i<100;i++) sold.add(i.toString().padStart(2,'0')); applyState(); saveSoldLocal(); schedulePreview(); syncAllToSupabase(); }
+function clearAll()       { sold.clear(); applyState(); saveSoldLocal(); schedulePreview(); syncAllToSupabase(); }
 
-async function syncAllToSupabase() {
-  if (!window.supabase) return;
-  try {
-    const { data: rifa } = await supabase.from('rifas').select('id, precioNumero').eq('estado', 'activa').maybeSingle();
-    if (!rifa) return;
-    
-    // Primero, liberar todos los números
-    await supabase.from('numeros').update({ estado: 'disponible' }).eq('rifaId', rifa.id);
-    
-    // Luego, reservar los que estén en `sold`
-    const soldArr = Array.from(sold);
-    if (soldArr.length > 0) {
-      const inserts = soldArr.map(n => ({
-        rifaId: rifa.id,
-        numero: n,
-        estado: 'reservado',
-        precioPagado: rifa.precioNumero || '0',
-        montoAbonado: '0'
-      }));
-      await supabase.from('numeros').upsert(inserts, { onConflict: 'rifa_id,numero' });
-    }
-    showToast('🔄 Tabla sincronizada en la nube');
-  } catch (e) {
-    console.error("Error sincronizando todos los números:", e);
-  }
-}
-
-// ══════════════════════════════════════
-// SLIDERS
-// ══════════════════════════════════════
-function applySliders() {
-  const ids = ['slOpacity','slOverlayY','slGridY','slMarginX','slMarginB'];
-  const vals = ['valOpacity','valOverlayY','valGridY','valMarginX','valMarginB'];
-  const keys = ['opacity','overlayY','gridY','marginX','marginB'];
-  ids.forEach((id,i) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const v  = parseFloat(el.value);
-    pos[keys[i]] = v;
-    document.getElementById(vals[i]).textContent = v.toFixed(1)+'%';
-    // update track fill
-    const max = parseFloat(el.max), min = parseFloat(el.min);
-    el.style.setProperty('--pct', ((v-min)/(max-min)*100)+'%');
-  });
-}
-
-function onSlider()  { applySliders(); savePos(); schedulePreview(); }
-
-function resetPosition() {
-  pos = {...DEFAULT_POS};
-  document.getElementById('slOpacity').value  = DEFAULT_POS.opacity;
-  document.getElementById('slOverlayY').value = DEFAULT_POS.overlayY;
-  document.getElementById('slGridY').value    = DEFAULT_POS.gridY;
-  document.getElementById('slMarginX').value  = DEFAULT_POS.marginX;
-  document.getElementById('slMarginB').value  = DEFAULT_POS.marginB;
-  applySliders(); savePos(); schedulePreview();
-}
-
-function setSlidersFromPos() {
-  document.getElementById('slOpacity').value  = pos.opacity !== undefined ? pos.opacity : 60;
-  document.getElementById('slOverlayY').value = pos.overlayY;
-  document.getElementById('slGridY').value    = pos.gridY;
-  document.getElementById('slMarginX').value  = pos.marginX;
-  document.getElementById('slMarginB').value  = pos.marginB;
-  applySliders();
-}
-
-function toggleAdjust() {
-  const btn  = document.getElementById('adjustToggle');
-  const body = document.getElementById('adjustBody');
-  btn.classList.toggle('open');
-  body.classList.toggle('open');
-}
-
-// ══════════════════════════════════════
-// DRAW
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+// DRAW CANVAS
+// ══════════════════════════════════════════════════════════════════
 function drawRifa(ctx, w, h, soldSet, p) {
   const scale = w / FULL_W;
-  // Background
   if (bgImage) ctx.drawImage(bgImage, 0, 0, w, h);
   else { ctx.fillStyle='#111'; ctx.fillRect(0,0,w,h); }
 
-  // Dark overlay
   const overlayStart = h * p.overlayY / 100;
-  const opVal = p.opacity !== undefined ? p.opacity / 100 : 0.60;
-  ctx.fillStyle=`rgba(0,0,0,${opVal.toFixed(2)})`;
+  const opVal = (p.opacity ?? 60) / 100;
+  ctx.fillStyle = `rgba(0,0,0,${opVal.toFixed(2)})`;
   ctx.fillRect(0, overlayStart, w, h - overlayStart);
 
-  // Grid bounds
   const marginX = w * p.marginX / 100;
   const gridTop  = h * p.gridY   / 100;
   const gridBot  = h * (1 - p.marginB/100);
-  const gridLeft = marginX;
   const gridW    = w - marginX * 2;
   const gridH    = gridBot - gridTop;
   const cellW    = gridW / 10;
@@ -555,22 +655,21 @@ function drawRifa(ctx, w, h, soldSet, p) {
   const xSz      = Math.round(95 * scale);
 
   for (let i=0;i<100;i++) {
-    const val   = i.toString().padStart(2,'0');
-    const col   = i % 10;
-    const row   = Math.floor(i / 10);
-    const x     = gridLeft + col * cellW;
-    const y     = gridTop  + row * cellH;
+    const val = i.toString().padStart(2,'0');
+    const col = i % 10;
+    const row = Math.floor(i / 10);
+    const x   = marginX + col * cellW;
+    const y   = gridTop  + row * cellH;
     const isSold = soldSet.has(val);
 
     ctx.fillStyle = isSold ? 'rgba(200,20,20,0.45)' : 'rgba(40,40,50,0.50)';
     ctx.fillRect(x, y, cellW, cellH);
-
     const lw = Math.max(1, 2.5*scale);
     ctx.strokeStyle='rgba(255,255,255,0.85)'; ctx.lineWidth=lw;
     ctx.strokeRect(x+lw/2, y+lw/2, cellW-lw, cellH-lw);
 
     ctx.save();
-    ctx.font=`900 ${numSz}px 'Montserrat',sans-serif`;
+    ctx.font = `900 ${numSz}px 'Montserrat',sans-serif`;
     ctx.textAlign='center'; ctx.textBaseline='middle';
     if (isSold) { ctx.fillStyle='rgba(255,255,255,0.25)'; }
     else { ctx.shadowColor='rgba(0,0,0,1)'; ctx.shadowBlur=14*scale; ctx.fillStyle='#fff'; }
@@ -579,7 +678,7 @@ function drawRifa(ctx, w, h, soldSet, p) {
 
     if (isSold) {
       ctx.save();
-      ctx.font=`900 ${xSz}px 'Montserrat',sans-serif`;
+      ctx.font = `900 ${xSz}px 'Montserrat',sans-serif`;
       ctx.textAlign='center'; ctx.textBaseline='middle';
       ctx.fillStyle='rgba(255,0,0,0.85)'; ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=10*scale;
       ctx.fillText('X', x+cellW/2, y+cellH/2);
@@ -588,14 +687,14 @@ function drawRifa(ctx, w, h, soldSet, p) {
   }
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
 // PREVIEW
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
 let previewPending = false;
 function schedulePreview() {
   if (previewPending) return;
   previewPending = true;
-  requestAnimationFrame(()=>{ previewPending=false; updatePreview(); });
+  requestAnimationFrame(() => { previewPending=false; updatePreview(); });
 }
 
 function updatePreview() {
@@ -611,9 +710,9 @@ function updatePreview() {
   drawRifa(ctx, cw, ch, sold, pos);
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
 // DOWNLOAD
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
 async function downloadImage() {
   const btnD=document.getElementById('btnDL'), btnM=document.getElementById('btnDLM');
   btnD.disabled=true; btnM.disabled=true;
@@ -624,221 +723,101 @@ async function downloadImage() {
     const ctx=canvas.getContext('2d');
     await document.fonts.ready;
     drawRifa(ctx, FULL_W, FULL_H, sold, pos);
-    canvas.toBlob(blob=>{
+    canvas.toBlob(blob => {
       const url=URL.createObjectURL(blob);
       const a=document.createElement('a'); a.href=url; a.download='rifas_numeros.png'; a.click();
       setTimeout(()=>URL.revokeObjectURL(url),8000);
       showToast('✅ ¡Imagen descargada!');
       btnD.disabled=false; btnM.disabled=false;
-    },'image/png');
+    }, 'image/png');
   } catch(err) {
     console.error(err); showToast('❌ Error'); btnD.disabled=false; btnM.disabled=false;
   }
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
 // TOAST
-// ══════════════════════════════════════
-let toastT=null;
+// ══════════════════════════════════════════════════════════════════
+let toastT = null;
 function showToast(msg) {
   const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
   clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3200);
 }
 
-  // 1. Sincronización de imagen de fondo (Upload a Supabase Storage)
-  async function uploadFlyerToSupabase(file) {
-    if (!window.supabase) return null;
-    try {
-      const fileName = `flyer_${Date.now()}_${file.name}`;
-      const { data, error } = await supabase.storage.from('flyers').upload(fileName, file, { upsert: true });
-      if (error) throw error;
-      
-      const { data: publicData } = supabase.storage.from('flyers').getPublicUrl(fileName);
-      
-      // Actualizar rifa activa
-      const { data: rifa } = await supabase.from('rifas').select('id').eq('estado', 'activa').maybeSingle();
-      if (rifa) {
-        await supabase.from('rifas').update({ imagenUrl: publicData.publicUrl }).eq('id', rifa.id);
-      }
-      return publicData.publicUrl;
-    } catch (e) {
-      console.error("Error subiendo flyer a Supabase:", e);
-      return null;
-    }
+// ══════════════════════════════════════════════════════════════════
+// INIT PRINCIPAL
+// ══════════════════════════════════════════════════════════════════
+(async () => {
+  // 1. Inicializar Supabase client GLOBAL
+  if (window.supabase) {
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 
-  // 2. Sincronización de números marcados
-  async function syncNumberToSupabase(val, isSold) {
-    if (!window.supabase) return;
-    try {
-      const { data: rifa } = await supabase.from('rifas').select('id, precioNumero').eq('estado', 'activa').maybeSingle();
-      if (!rifa) return;
-      
-      if (isSold) {
-        // Reservar
-        await supabase.from('numeros').upsert({
-          rifaId: rifa.id,
-          numero: val,
-          estado: 'reservado',
-          precioPagado: rifa.precioNumero || '0',
-          montoAbonado: '0'
-        }, { onConflict: 'rifa_id,numero' });
-      } else {
-        // Liberar
-        await supabase.from('numeros').update({ estado: 'disponible' }).match({ rifaId: rifa.id, numero: val });
-      }
-    } catch (e) {
-      console.error("Error sincronizando número:", e);
-    }
-  }
-// ══════════════════════════════════════
-// INIT & SUPABASE
-// ══════════════════════════════════════
-(async()=>{
-  const overlay = document.getElementById('previewOverlay');
-  
-  // 1. Cargar estado local guardado previamente por el promotor
-  let localSold = loadSold();
-  sold = new Set([...localSold]);
+  // 2. Cargar estado local inmediatamente (para que se vea algo rápido)
+  sold = buildDefault();
+  pos  = loadPosLocal();
+  syncUIFromPos();
   applyState();
-  
-  pos = loadPosLocal();
-  setSlidersFromPos();
-  
-  // 2. Intentar cargar desde Supabase silenciosamente
-  try {
-    if (overlay) overlay.textContent = 'Actualizando con DB...';
-    
-    if (window.supabase) {
-      const SUPABASE_URL = 'https://zwbhsukrpbcxqypnnbzp.supabase.co';
-      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3YmhzdWtycGJjeHF5cG5uYnpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyOTMzOTEsImV4cCI6MjA5OTg2OTM5MX0.FN4JGYlf-1AZj3tNNCw9HYYUE2KKzBRSHKqqMERgQfc';
-      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      
-      const { data: rifa } = await supabase.from('rifas').select('id, imagenUrl').eq('estado', 'activa').maybeSingle();
-      
-      if (rifa) {
-        // Traer números oficialmente vendidos
-        const { data: numeros } = await supabase.from('numeros').select('numero').eq('rifaId', rifa.id).neq('estado', 'disponible');
-        
-        // Hacer que Supabase sea la fuente de la verdad
-        sold.clear();
-        if (numeros) {
+  schedulePreview();
+  await loadFlyerFromLocal();
+
+  // 3. Sincronizar con Supabase (fuente de la verdad)
+  if (db) {
+    setSyncStatus('syncing');
+    try {
+      const id = await getRifaId();
+      if (id) {
+        // — Números
+        const { data: numeros, error: numErr } = await db.from('numeros')
+          .select('numero').eq('rifaId', id).neq('estado','disponible');
+        if (!numErr && numeros) {
+          sold.clear();
           numeros.forEach(n => sold.add(n.numero));
+          applyState();
+          saveSoldLocal();
         }
-        applyState();
-        saveSold();
-        
-        // Traer imagen si no hay una cargada
-        if (rifa.imagenUrl) {
+
+        // — Flyer
+        const { data: rifa } = await db.from('rifas').select('imagenUrl').eq('id', id).maybeSingle();
+        if (rifa?.imagenUrl) {
           try {
-            // Usar cache: 'no-cache' en lugar de ?t para evitar error 400 de Supabase Storage
-            const resp = await fetch(rifa.imagenUrl, { cache: 'no-cache' });
+            const resp = await fetch(rifa.imagenUrl, { cache: 'reload' });
             if (resp.ok) {
               const blob = await resp.blob();
-              await saveFlyerToDB(blob, 'flyer_activa.jpeg');
+              await idbPut('flyer', blob);
+              await idbPut('flyerName', 'flyer_activa.jpeg');
               setFlyerFromBlob(blob, 'flyer_activa.jpeg');
-            } else {
-              throw new Error("CORS o error de red: " + resp.status);
             }
-          } catch(e) {
-            console.warn("No se pudo cargar foto de DB", e);
-            fallbackToLocalImage();
-          }
-        } else {
-          fallbackToLocalImage();
+          } catch(e) { /* usa el local */ }
         }
 
-        // Descargar configuración de posición compartida
+        // — Configuración de posición
         try {
-          const fileName = `config_${rifa.id}.json`;
-          const { data: publicData } = supabase.storage.from('flyers').getPublicUrl(fileName);
-          const configResp = await fetch(publicData.publicUrl, { cache: 'no-cache' });
-          if (configResp.ok) {
-            const remotePos = await configResp.json();
-            pos = { ...DEFAULT_POS, ...remotePos };
-            savePosLocal(); // Cachear
+          const fileName = `config_${id}.json`;
+          const { data: pub } = db.storage.from('flyers').getPublicUrl(fileName);
+          const resp = await fetch(pub.publicUrl, { cache: 'reload' });
+          if (resp.ok) {
+            const remote = await resp.json();
+            pos = { ...DEFAULT_POS, ...remote };
+            savePosLocal();
+            syncUIFromPos();
+            schedulePreview();
           }
-        } catch (e) {
-          console.log("No remote config found, using local");
-        }
+        } catch(e) { /* usa pos local */ }
+
+        setSyncStatus('ok');
       } else {
-        fallbackToLocalImage();
+        setSyncStatus('error');
+        showToast('⚠️ No hay rifa activa en la DB');
       }
-    } else {
-      fallbackToLocalImage();
+    } catch(e) {
+      console.error('INIT sync error:', e);
+      setSyncStatus('error');
     }
-  } catch (err) {
-    console.error("Error en DB, usando modo offline", err);
-    fallbackToLocalImage();
   }
 
   window.addEventListener('resize', schedulePreview);
-
-  // 3. Arrastrar y soltar en el canvas
-  const canvas = document.getElementById('previewCanvas');
-  let isDragging = false;
-  let startY = 0;
-  let initialGridY = 0;
-  let initialOverlayY = 0;
-
-  canvas.addEventListener('pointerdown', (e) => {
-    isDragging = true;
-    startY = e.clientY;
-    initialGridY = pos.gridY;
-    initialOverlayY = pos.overlayY;
-    canvas.style.cursor = 'grabbing';
-  });
-
-  window.addEventListener('pointermove', (e) => {
-    if (!isDragging) return;
-    const dy = e.clientY - startY;
-    const rect = canvas.getBoundingClientRect();
-    const pctChange = (dy / rect.height) * 100;
-    
-    // Limitar que no se salga de los bordes locamente
-    pos.gridY = Math.max(0, Math.min(95, initialGridY + pctChange));
-    pos.overlayY = Math.max(0, Math.min(95, initialOverlayY + pctChange));
-    
-    schedulePreview();
-    setSlidersFromPos();
-  });
-
-  window.addEventListener('pointerup', () => {
-    if (isDragging) {
-      isDragging = false;
-      canvas.style.cursor = 'grab';
-      savePos();
-    }
-  });
-  window.addEventListener('pointercancel', () => {
-    if (isDragging) {
-      isDragging = false;
-      canvas.style.cursor = 'grab';
-    }
-  });
-  canvas.style.cursor = 'grab';
-  // Eliminado touchAction='none' para permitir scroll vertical natural si tocan los bordes
 })();
-
-async function fallbackToLocalImage() {
-  try {
-    const { blob, name } = await loadFlyerFromDB();
-    if (blob) {
-      setFlyerFromBlob(blob, name||'flyer_base.jpeg');
-    } else {
-      const resp = await fetch('flyer_base.jpeg');
-      if (resp.ok) {
-        const blob2 = await resp.blob();
-        await saveFlyerToDB(blob2,'flyer_base.jpeg');
-        setFlyerFromBlob(blob2,'flyer_base.jpeg');
-      } else {
-        document.getElementById('previewOverlay').classList.add('hidden');
-      }
-    }
-  } catch(e) {
-    document.getElementById('previewOverlay').classList.add('hidden');
-  }
-}
 </script>
 </body>
 </html>
