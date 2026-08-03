@@ -234,6 +234,7 @@
 <!-- Mobile sticky bar -->
 <div class="sticky-bar">
   <div class="sticky-info">Vendidos: <strong id="soldCountM">0</strong>/100</div>
+  <button class="btn-sticky" style="background:#555" onclick="toggleAdjust(); window.scrollTo({top:0, behavior:'smooth'});">⚙️ Posición</button>
   <button class="btn-sticky" id="btnDLM" onclick="downloadImage()">⬇ Descargar</button>
 </div>
 
@@ -459,7 +460,7 @@ async function syncAllToSupabase() {
     if (!rifa) return;
     
     // Primero, liberar todos los números
-    await supabase.from('numeros').update({ estado: 'disponible' }).match({ rifaId: rifa.id });
+    await supabase.from('numeros').update({ estado: 'disponible' }).eq('rifaId', rifa.id);
     
     // Luego, reservar los que estén en `sold`
     const soldArr = Array.from(sold);
@@ -730,14 +731,14 @@ function showToast(msg) {
         // Traer imagen si no hay una cargada
         if (rifa.imagenUrl) {
           try {
-            // Un truco para evitar caché del navegador al cargar la imagen
-            const resp = await fetch(rifa.imagenUrl + '?t=' + Date.now());
+            // Usar cache: 'no-cache' en lugar de ?t para evitar error 400 de Supabase Storage
+            const resp = await fetch(rifa.imagenUrl, { cache: 'no-cache' });
             if (resp.ok) {
               const blob = await resp.blob();
               await saveFlyerToDB(blob, 'flyer_activa.jpeg');
               setFlyerFromBlob(blob, 'flyer_activa.jpeg');
             } else {
-              throw new Error("CORS o error de red");
+              throw new Error("CORS o error de red: " + resp.status);
             }
           } catch(e) {
             console.warn("No se pudo cargar foto de DB", e);
@@ -751,7 +752,7 @@ function showToast(msg) {
         try {
           const fileName = `config_${rifa.id}.json`;
           const { data: publicData } = supabase.storage.from('flyers').getPublicUrl(fileName);
-          const configResp = await fetch(publicData.publicUrl + '?t=' + Date.now());
+          const configResp = await fetch(publicData.publicUrl, { cache: 'no-cache' });
           if (configResp.ok) {
             const remotePos = await configResp.json();
             pos = { ...DEFAULT_POS, ...remotePos };
