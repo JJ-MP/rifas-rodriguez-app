@@ -556,57 +556,63 @@ function showToast(msg) {
 }
 
 // ══════════════════════════════════════
-// SUPABASE INTEGRATION
-// ══════════════════════════════════════
-const SUPABASE_URL = 'https://zwbhsukrpbcxqypnnbzp.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3YmhzdWtycGJjeHF5cG5uYnpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyOTMzOTEsImV4cCI6MjA5OTg2OTM5MX0.FN4JGYlf-1AZj3tNNCw9HYYUE2KKzBRSHKqqMERgQfc';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// ══════════════════════════════════════
-// INIT
+// INIT & SUPABASE
 // ══════════════════════════════════════
 (async()=>{
   const overlay = document.getElementById('previewOverlay');
-  if (overlay) overlay.textContent = 'Conectando con DB...';
   
-  // 1. Fetch active raffle
-  const { data: rifa, error: rifaErr } = await supabase
-    .from('rifas')
-    .select('id, imagenUrl')
-    .eq('estado', 'activa')
-    .maybeSingle();
-
-  if (rifa) {
-    // 2. Fetch sold/reserved numbers
-    const { data: numeros } = await supabase
-      .from('numeros')
-      .select('numero')
-      .eq('rifaId', rifa.id)
-      .neq('estado', 'disponible');
-      
-    if (numeros) {
-      sold = new Set(numeros.map(n => n.numero));
-    }
-    applyState();
+  // 1. Cargar estado local guardado previamente por el promotor
+  let localSold = loadSold();
+  sold = new Set([...localSold]);
+  applyState();
+  
+  // 2. Intentar cargar desde Supabase silenciosamente
+  try {
+    if (overlay) overlay.textContent = 'Actualizando con DB...';
     
-    // 3. Load Flyer Image
-    if (rifa.imagenUrl) {
-      try {
-        const resp = await fetch(rifa.imagenUrl);
-        const blob = await resp.blob();
-        await saveFlyerToDB(blob, 'flyer_activa.jpeg');
-        setFlyerFromBlob(blob, 'flyer_activa.jpeg');
-      } catch (e) {
-        console.error("Error fetching image", e);
+    if (window.supabase) {
+      const SUPABASE_URL = 'https://zwbhsukrpbcxqypnnbzp.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3YmhzdWtycGJjeHF5cG5uYnpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyOTMzOTEsImV4cCI6MjA5OTg2OTM5MX0.FN4JGYlf-1AZj3tNNCw9HYYUE2KKzBRSHKqqMERgQfc';
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      
+      const { data: rifa } = await supabase.from('rifas').select('id, imagenUrl').eq('estado', 'activa').maybeSingle();
+      
+      if (rifa) {
+        // Traer números oficialmente vendidos
+        const { data: numeros } = await supabase.from('numeros').select('numero').eq('rifaId', rifa.id).neq('estado', 'disponible');
+        if (numeros) {
+          // Combinar locales con los de la DB
+          numeros.forEach(n => sold.add(n.numero));
+          applyState();
+          saveSold();
+        }
+        
+        // Traer imagen si no hay una cargada
+        if (rifa.imagenUrl) {
+          try {
+            const resp = await fetch(rifa.imagenUrl);
+            if (resp.ok) {
+              const blob = await resp.blob();
+              await saveFlyerToDB(blob, 'flyer_activa.jpeg');
+              setFlyerFromBlob(blob, 'flyer_activa.jpeg');
+            } else {
+              throw new Error("CORS o error de red");
+            }
+          } catch(e) {
+            console.warn("No se pudo cargar foto de DB", e);
+            fallbackToLocalImage();
+          }
+        } else {
+          fallbackToLocalImage();
+        }
+      } else {
         fallbackToLocalImage();
       }
     } else {
       fallbackToLocalImage();
     }
-  } else {
-    // Fallback if no active raffle
-    sold = loadSold(); 
-    applyState();
+  } catch (err) {
+    console.error("Error en DB, usando modo offline", err);
     fallbackToLocalImage();
   }
 
