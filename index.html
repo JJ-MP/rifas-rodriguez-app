@@ -409,9 +409,54 @@ function updateCounters() {
   document.getElementById('soldCountM').textContent = sold.size;
 }
 
-function resetToDefault() { sold=buildDefault(); applyState(); saveSold(); schedulePreview(); }
-function markAll()        { for(let i=0;i<100;i++) sold.add(i.toString().padStart(2,'0')); applyState(); saveSold(); schedulePreview(); }
-function clearAll()       { sold.clear(); applyState(); saveSold(); schedulePreview(); }
+function resetToDefault() { 
+  sold=buildDefault(); 
+  applyState(); 
+  saveSold(); 
+  schedulePreview();
+  syncAllToSupabase();
+}
+function markAll() { 
+  for(let i=0;i<100;i++) sold.add(i.toString().padStart(2,'0')); 
+  applyState(); 
+  saveSold(); 
+  schedulePreview();
+  syncAllToSupabase();
+}
+function clearAll() { 
+  sold.clear(); 
+  applyState(); 
+  saveSold(); 
+  schedulePreview();
+  syncAllToSupabase();
+}
+
+async function syncAllToSupabase() {
+  if (!window.supabase) return;
+  try {
+    const { data: rifa } = await supabase.from('rifas').select('id, precioNumero').eq('estado', 'activa').maybeSingle();
+    if (!rifa) return;
+    
+    // Primero, liberar todos los números
+    await supabase.from('numeros').update({ estado: 'disponible' }).match({ rifaId: rifa.id });
+    
+    // Luego, reservar los que estén en `sold`
+    const soldArr = Array.from(sold);
+    if (soldArr.length > 0) {
+      const inserts = soldArr.map(n => ({
+        rifaId: rifa.id,
+        numero: n,
+        estado: 'reservado',
+        precioPagado: rifa.precioNumero || '0',
+        montoAbonado: '0'
+      }));
+      await supabase.from('numeros').upsert(inserts, { onConflict: 'rifa_id,numero' });
+    }
+    showToast('🔄 Tabla sincronizada en la nube');
+  } catch (e) {
+    console.error("Error sincronizando todos los números:", e);
+  }
+}
 
 // ══════════════════════════════════════
 // SLIDERS
@@ -649,17 +694,20 @@ function showToast(msg) {
       if (rifa) {
         // Traer números oficialmente vendidos
         const { data: numeros } = await supabase.from('numeros').select('numero').eq('rifaId', rifa.id).neq('estado', 'disponible');
+        
+        // Hacer que Supabase sea la fuente de la verdad
+        sold.clear();
         if (numeros) {
-          // Combinar locales con los de la DB
           numeros.forEach(n => sold.add(n.numero));
-          applyState();
-          saveSold();
         }
+        applyState();
+        saveSold();
         
         // Traer imagen si no hay una cargada
         if (rifa.imagenUrl) {
           try {
-            const resp = await fetch(rifa.imagenUrl);
+            // Un truco para evitar caché del navegador al cargar la imagen
+            const resp = await fetch(rifa.imagenUrl + '?t=' + Date.now());
             if (resp.ok) {
               const blob = await resp.blob();
               await saveFlyerToDB(blob, 'flyer_activa.jpeg');
