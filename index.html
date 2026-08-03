@@ -324,10 +324,10 @@ const FLYER_FILE  = 'rifas_flyer.jpeg';
 
 let db = null; // Supabase client (para storage)
 
-// Helper: fetch con service_role (para subir archivos)
+// Helper: subir archivo al bucket (PUT = crear o sobreescribir)
 async function storagePut(filename, blob, contentType) {
   const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${filename}`, {
-    method: 'POST',
+    method: 'PUT',
     headers: {
       'Authorization': `Bearer ${SERVICE_KEY}`,
       'x-upsert': 'true',
@@ -335,6 +335,10 @@ async function storagePut(filename, blob, contentType) {
     },
     body: blob
   });
+  if (!res.ok) {
+    const txt = await res.text();
+    console.error('storagePut error:', res.status, txt);
+  }
   return res.ok;
 }
 
