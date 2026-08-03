@@ -35,12 +35,9 @@
 
     /* ══ LAYOUT ══ */
     .app-layout {
-      display:grid;
-      grid-template-columns:1fr;
-      padding-bottom:76px;
-    }
-    @media (min-width:780px) {
-      .app-layout { grid-template-columns:1fr 360px; height:calc(100vh - 50px); padding-bottom:0; overflow:hidden; }
+      width:100%; max-width:500px; margin:0 auto; padding:12px;
+      display:flex; flex-direction:column; gap:16px;
+      padding-bottom: 80px; /* espacio para botones flotantes */
     }
 
     /* ══ LEFT — GRID PANEL ══ */
@@ -341,23 +338,37 @@ function setFlyerFromBlob(blob, name) {
   img.src = url;
 }
 
-function onFlyerSelected(e) {
+async function onFlyerSelected(e) {
   const file = e.target.files[0]; if (!file) return;
-  saveFlyerToDB(file, file.name).catch(()=>{});
+  document.getElementById('previewOverlay').classList.remove('hidden');
+  document.getElementById('previewOverlay').textContent = 'Subiendo flyer a la base de datos...';
+  
+  // Guardar local
+  await saveFlyerToDB(file, file.name).catch(()=>{});
+  
+  // Subir a la nube
+  const publicUrl = await uploadFlyerToSupabase(file);
+  
   setFlyerFromBlob(file, file.name);
-  showToast('🖼️ Imagen guardada');
+  showToast(publicUrl ? '🖼️ Imagen subida a la nube' : '🖼️ Imagen guardada local (modo offline)');
   e.target.value='';
 }
 
 function onDragOver(e)  { e.preventDefault(); document.getElementById('uploadZone').classList.add('drag-over'); }
 function onDragLeave()  { document.getElementById('uploadZone').classList.remove('drag-over'); }
-function onDrop(e) {
+async function onDrop(e) {
   e.preventDefault(); document.getElementById('uploadZone').classList.remove('drag-over');
   const file = e.dataTransfer.files[0];
   if (!file||!file.type.startsWith('image/')) return;
-  saveFlyerToDB(file, file.name).catch(()=>{});
+  
+  document.getElementById('previewOverlay').classList.remove('hidden');
+  document.getElementById('previewOverlay').textContent = 'Subiendo flyer a la base de datos...';
+  
+  await saveFlyerToDB(file, file.name).catch(()=>{});
+  const publicUrl = await uploadFlyerToSupabase(file);
+  
   setFlyerFromBlob(file, file.name);
-  showToast('🖼️ Imagen guardada');
+  showToast(publicUrl ? '🖼️ Imagen subida a la nube' : '🖼️ Imagen guardada local (modo offline)');
 }
 
 // ══════════════════════════════════════
@@ -373,9 +384,13 @@ for (let i=0;i<100;i++) {
 }
 
 function toggle(val) {
+  const isSold = !sold.has(val);
   if (sold.has(val)) { sold.delete(val); document.getElementById('c'+val).classList.remove('sold'); }
   else               { sold.add(val);    document.getElementById('c'+val).classList.add('sold'); }
   updateCounters(); saveSold(); schedulePreview();
+  
+  // Sincronizar en background
+  syncNumberToSupabase(val, isSold);
 }
 
 function applyState() {
@@ -555,6 +570,52 @@ function showToast(msg) {
   clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3200);
 }
 
+  // 1. Sincronización de imagen de fondo (Upload a Supabase Storage)
+  async function uploadFlyerToSupabase(file) {
+    if (!window.supabase) return null;
+    try {
+      const fileName = `flyer_${Date.now()}_${file.name}`;
+      const { data, error } = await supabase.storage.from('flyers').upload(fileName, file, { upsert: true });
+      if (error) throw error;
+      
+      const { data: publicData } = supabase.storage.from('flyers').getPublicUrl(fileName);
+      
+      // Actualizar rifa activa
+      const { data: rifa } = await supabase.from('rifas').select('id').eq('estado', 'activa').maybeSingle();
+      if (rifa) {
+        await supabase.from('rifas').update({ imagenUrl: publicData.publicUrl }).eq('id', rifa.id);
+      }
+      return publicData.publicUrl;
+    } catch (e) {
+      console.error("Error subiendo flyer a Supabase:", e);
+      return null;
+    }
+  }
+
+  // 2. Sincronización de números marcados
+  async function syncNumberToSupabase(val, isSold) {
+    if (!window.supabase) return;
+    try {
+      const { data: rifa } = await supabase.from('rifas').select('id, precioNumero').eq('estado', 'activa').maybeSingle();
+      if (!rifa) return;
+      
+      if (isSold) {
+        // Reservar
+        await supabase.from('numeros').upsert({
+          rifaId: rifa.id,
+          numero: val,
+          estado: 'reservado',
+          precioPagado: rifa.precioNumero || '0',
+          montoAbonado: '0'
+        }, { onConflict: 'rifa_id,numero' });
+      } else {
+        // Liberar
+        await supabase.from('numeros').update({ estado: 'disponible' }).match({ rifaId: rifa.id, numero: val });
+      }
+    } catch (e) {
+      console.error("Error sincronizando número:", e);
+    }
+  }
 // ══════════════════════════════════════
 // INIT & SUPABASE
 // ══════════════════════════════════════
@@ -620,6 +681,50 @@ function showToast(msg) {
   pos = loadPos(); 
   setSlidersFromPos();
   window.addEventListener('resize', schedulePreview);
+
+  // 3. Arrastrar y soltar en el canvas
+  const canvas = document.getElementById('previewCanvas');
+  let isDragging = false;
+  let startY = 0;
+  let initialGridY = 0;
+  let initialOverlayY = 0;
+
+  canvas.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    startY = e.clientY;
+    initialGridY = pos.gridY;
+    initialOverlayY = pos.overlayY;
+    canvas.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const dy = e.clientY - startY;
+    const rect = canvas.getBoundingClientRect();
+    const pctChange = (dy / rect.height) * 100;
+    
+    pos.gridY = initialGridY + pctChange;
+    pos.overlayY = initialOverlayY + pctChange;
+    
+    schedulePreview();
+    setSlidersFromPos();
+  });
+
+  window.addEventListener('pointerup', () => {
+    if (isDragging) {
+      isDragging = false;
+      canvas.style.cursor = 'grab';
+      savePos();
+    }
+  });
+  window.addEventListener('pointercancel', () => {
+    if (isDragging) {
+      isDragging = false;
+      canvas.style.cursor = 'grab';
+    }
+  });
+  canvas.style.cursor = 'grab';
+  canvas.style.touchAction = 'none'; // Evitar scroll al arrastrar en móviles
 })();
 
 async function fallbackToLocalImage() {
