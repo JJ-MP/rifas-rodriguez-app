@@ -306,8 +306,29 @@ function buildDefault() {
 // ══════════════════════════════════════
 // POSITION — localStorage
 // ══════════════════════════════════════
-function savePos() { localStorage.setItem('rifas_pos', JSON.stringify(pos)); }
-function loadPos() {
+function savePosLocal() { localStorage.setItem('rifas_pos', JSON.stringify(pos)); }
+
+// Sincronizar posición en la nube (Storage)
+let syncTimer = null;
+async function savePos() {
+  savePosLocal();
+  if (!window.supabase) return;
+  // Debounce para no saturar Supabase mientras arrastran
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(async () => {
+    try {
+      const { data: rifa } = await supabase.from('rifas').select('id').eq('estado', 'activa').maybeSingle();
+      if (!rifa) return;
+      const fileName = `config_${rifa.id}.json`;
+      const blob = new Blob([JSON.stringify(pos)], { type: 'application/json' });
+      await supabase.storage.from('flyers').upload(fileName, blob, { upsert: true, contentType: 'application/json' });
+    } catch (e) {
+      console.log('Error subiendo config', e);
+    }
+  }, 1000);
+}
+
+function loadPosLocal() {
   try { const r=localStorage.getItem('rifas_pos'); if(r) return {...DEFAULT_POS,...JSON.parse(r)}; } catch(e) {}
   return {...DEFAULT_POS};
 }
@@ -680,6 +701,9 @@ function showToast(msg) {
   sold = new Set([...localSold]);
   applyState();
   
+  pos = loadPosLocal();
+  setSlidersFromPos();
+  
   // 2. Intentar cargar desde Supabase silenciosamente
   try {
     if (overlay) overlay.textContent = 'Actualizando con DB...';
@@ -722,6 +746,20 @@ function showToast(msg) {
         } else {
           fallbackToLocalImage();
         }
+
+        // Descargar configuración de posición compartida
+        try {
+          const fileName = `config_${rifa.id}.json`;
+          const { data: publicData } = supabase.storage.from('flyers').getPublicUrl(fileName);
+          const configResp = await fetch(publicData.publicUrl + '?t=' + Date.now());
+          if (configResp.ok) {
+            const remotePos = await configResp.json();
+            pos = { ...DEFAULT_POS, ...remotePos };
+            savePosLocal(); // Cachear
+          }
+        } catch (e) {
+          console.log("No remote config found, using local");
+        }
       } else {
         fallbackToLocalImage();
       }
@@ -733,9 +771,6 @@ function showToast(msg) {
     fallbackToLocalImage();
   }
 
-  // Position sliders
-  pos = loadPos(); 
-  setSlidersFromPos();
   window.addEventListener('resize', schedulePreview);
 
   // 3. Arrastrar y soltar en el canvas
