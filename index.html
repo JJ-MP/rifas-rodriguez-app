@@ -179,20 +179,24 @@
       </button>
       <div class="adjust-body" id="adjustBody">
         <div class="slider-row">
+          <div class="slider-label"><span>Sombra oscura — opacidad</span><strong id="valOpacity">60%</strong></div>
+          <input type="range" id="slOpacity" min="0" max="100" step="1" value="60" oninput="onSlider()">
+        </div>
+        <div class="slider-row">
           <div class="slider-label"><span>Tabla — posición arriba/abajo</span><strong id="valGridY">26.9%</strong></div>
-          <input type="range" id="slGridY" min="0" max="80" step="0.1" value="26.9" oninput="onSlider()">
+          <input type="range" id="slGridY" min="0" max="95" step="0.1" value="26.9" oninput="onSlider()">
         </div>
         <div class="slider-row">
           <div class="slider-label"><span>Sombra oscura — empieza en</span><strong id="valOverlayY">26.1%</strong></div>
-          <input type="range" id="slOverlayY" min="0" max="80" step="0.1" value="26.1" oninput="onSlider()">
+          <input type="range" id="slOverlayY" min="0" max="95" step="0.1" value="26.1" oninput="onSlider()">
         </div>
         <div class="slider-row">
           <div class="slider-label"><span>Tabla — margen izq/der</span><strong id="valMarginX">3.1%</strong></div>
-          <input type="range" id="slMarginX" min="0" max="20" step="0.1" value="3.1" oninput="onSlider()">
+          <input type="range" id="slMarginX" min="0" max="30" step="0.1" value="3.1" oninput="onSlider()">
         </div>
         <div class="slider-row">
           <div class="slider-label"><span>Tabla — margen inferior</span><strong id="valMarginB">4.2%</strong></div>
-          <input type="range" id="slMarginB" min="0" max="20" step="0.1" value="4.2" oninput="onSlider()">
+          <input type="range" id="slMarginB" min="0" max="30" step="0.1" value="4.2" oninput="onSlider()">
         </div>
         <button class="btn-reset-pos" onclick="resetPosition()">↺ Posición por defecto</button>
       </div>
@@ -244,7 +248,7 @@
 const FULL_W = 1536, FULL_H = 2752;
 const FREE_NUMBERS = new Set(['00','40','49','50','54','55','58','60','61','64','65','66','70','75','77','87','88','89','91','95','98','99']);
 
-const DEFAULT_POS = { overlayY:26.1, gridY:26.9, marginX:3.1, marginB:4.2 };
+const DEFAULT_POS = { overlayY:26.1, gridY:26.9, marginX:3.1, marginB:4.2, opacity:60 };
 
 // ══════════════════════════════════════
 // STATE
@@ -413,11 +417,12 @@ function clearAll()       { sold.clear(); applyState(); saveSold(); schedulePrev
 // SLIDERS
 // ══════════════════════════════════════
 function applySliders() {
-  const ids = ['slOverlayY','slGridY','slMarginX','slMarginB'];
-  const vals = ['valOverlayY','valGridY','valMarginX','valMarginB'];
-  const keys = ['overlayY','gridY','marginX','marginB'];
+  const ids = ['slOpacity','slOverlayY','slGridY','slMarginX','slMarginB'];
+  const vals = ['valOpacity','valOverlayY','valGridY','valMarginX','valMarginB'];
+  const keys = ['opacity','overlayY','gridY','marginX','marginB'];
   ids.forEach((id,i) => {
     const el = document.getElementById(id);
+    if (!el) return;
     const v  = parseFloat(el.value);
     pos[keys[i]] = v;
     document.getElementById(vals[i]).textContent = v.toFixed(1)+'%';
@@ -431,6 +436,7 @@ function onSlider()  { applySliders(); savePos(); schedulePreview(); }
 
 function resetPosition() {
   pos = {...DEFAULT_POS};
+  document.getElementById('slOpacity').value  = DEFAULT_POS.opacity;
   document.getElementById('slOverlayY').value = DEFAULT_POS.overlayY;
   document.getElementById('slGridY').value    = DEFAULT_POS.gridY;
   document.getElementById('slMarginX').value  = DEFAULT_POS.marginX;
@@ -439,6 +445,7 @@ function resetPosition() {
 }
 
 function setSlidersFromPos() {
+  document.getElementById('slOpacity').value  = pos.opacity !== undefined ? pos.opacity : 60;
   document.getElementById('slOverlayY').value = pos.overlayY;
   document.getElementById('slGridY').value    = pos.gridY;
   document.getElementById('slMarginX').value  = pos.marginX;
@@ -464,7 +471,8 @@ function drawRifa(ctx, w, h, soldSet, p) {
 
   // Dark overlay
   const overlayStart = h * p.overlayY / 100;
-  ctx.fillStyle='rgba(0,0,0,0.60)';
+  const opVal = p.opacity !== undefined ? p.opacity / 100 : 0.60;
+  ctx.fillStyle=`rgba(0,0,0,${opVal.toFixed(2)})`;
   ctx.fillRect(0, overlayStart, w, h - overlayStart);
 
   // Grid bounds
@@ -703,8 +711,9 @@ function showToast(msg) {
     const rect = canvas.getBoundingClientRect();
     const pctChange = (dy / rect.height) * 100;
     
-    pos.gridY = initialGridY + pctChange;
-    pos.overlayY = initialOverlayY + pctChange;
+    // Limitar que no se salga de los bordes locamente
+    pos.gridY = Math.max(0, Math.min(95, initialGridY + pctChange));
+    pos.overlayY = Math.max(0, Math.min(95, initialOverlayY + pctChange));
     
     schedulePreview();
     setSlidersFromPos();
@@ -724,7 +733,7 @@ function showToast(msg) {
     }
   });
   canvas.style.cursor = 'grab';
-  canvas.style.touchAction = 'none'; // Evitar scroll al arrastrar en móviles
+  // Eliminado touchAction='none' para permitir scroll vertical natural si tocan los bordes
 })();
 
 async function fallbackToLocalImage() {
