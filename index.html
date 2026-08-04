@@ -427,10 +427,12 @@ async function saveConfigToCloud() {
 // SOLD NUMBERS
 // ══════════════════════════════════════════════════════════════════
 function saveSoldLocal() { localStorage.setItem('rifas_sold', JSON.stringify([...sold])); }
+function loadSoldLocal() {
+  try { const r = localStorage.getItem('rifas_sold'); if (r) return new Set(JSON.parse(r)); } catch(e) {}
+  return new Set();
+}
 function buildDefault() {
-  const s = new Set();
-  for (let i=0;i<100;i++) { const v=i.toString().padStart(2,'0'); if (!FREE_NUMBERS.has(v)) s.add(v); }
-  return s;
+  return new Set();
 }
 
 async function syncNumberToSupabase(val, isSold) {
@@ -756,7 +758,7 @@ function showToast(msg) {
   }
 
   // 2. Cargar estado local inmediatamente
-  sold = buildDefault();
+  sold = loadSoldLocal();
   pos  = loadPosLocal();
   syncUIFromPos();
   applyState();
